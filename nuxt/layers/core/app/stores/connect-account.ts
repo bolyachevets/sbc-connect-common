@@ -50,7 +50,7 @@ export const useConnectAccountStore = defineStore('nuxt-core-connect-account-sto
   /** Get user information from AUTH */
   function getAuthUserProfile (identifier: string) {
     try {
-      return $authApi<KCUser>(`/users/${identifier}`, {
+      const response = $authApi<KCUser>(`/users/${identifier}`, {
         onResponseError ({ response }) {
           errors.value.push({
             statusCode: response.status || 500,
@@ -60,18 +60,22 @@ export const useConnectAccountStore = defineStore('nuxt-core-connect-account-sto
           })
         }
       })
-    } catch {
-      console.warn('Error fetching user info.')
+
+      return response
+    } catch (e) {
+      logFetchError(e, 'Error fetching user info.')
     }
   }
 
   /** Update user information in AUTH with current token info */
   async function updateAuthUserInfo (): Promise<void | KCUser> {
     try {
-      return await $authApi<KCUser>('/users', {
+      const response = await $authApi<KCUser>('/users', {
         method: 'POST',
         body: { isLogin: true }
       })
+
+      return response
     } catch (e) {
       logFetchError(e, 'Error updating auth user info')
     }
