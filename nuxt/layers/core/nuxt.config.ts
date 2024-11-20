@@ -14,6 +14,12 @@ export default defineNuxtConfig({
     compatibilityVersion: 4
   },
 
+  nitro: {
+    prerender: {
+      ignore: [] // ignore tos/login pages by default
+    }
+  },
+
   css: [join(currentDir, './app/assets/css/main.css')],
 
   modules: [
