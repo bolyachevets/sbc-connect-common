@@ -18,7 +18,7 @@ const actions = [
 ]
 
 setBreadcrumbs([
-  { label: 'test', to: useRuntimeConfig().public.registryHomeURL },
+  { label: 'test', to: useRuntimeConfig().public.registryHomeURL, appendAccountId: true },
   { label: 'test 2', to: useRuntimeConfig().public.registryHomeURL },
   { label: 'test 3' }
 ])
