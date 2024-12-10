@@ -2,10 +2,13 @@ import type { DropdownItem } from '#ui/types'
 
 // handle navigation items and functionality
 export function useConnectNav () {
-  const config = useRuntimeConfig()
-  const authWebUrl = config.public.authWebURL
+  const rtc = useRuntimeConfig()
+  const authWebUrl = rtc.public.authWebURL
+  const appBaseUrl = rtc.public.baseUrl
+  const loginConfig = useAppConfig().connect.core.login
+
   // const localePath = useLocalePath()
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const { login, logout, isAuthenticated, kcUser } = useKeycloak()
   const accountStore = useConnectAccountStore()
 
@@ -119,32 +122,45 @@ export function useConnectNav () {
     return options
   })
 
-  const loggedOutUserOptions = computed<DropdownItem[][]>(() => [
-    [
-      {
-        label: 'n/a',
-        slot: 'method',
-        disabled: true
-      }
-    ],
-    [
-      {
-        label: t('label.bcsc'),
-        icon: 'i-mdi-account-card-details-outline',
-        click: () => login(IdpHint.BCSC)
-      },
-      {
-        label: t('label.bceid'),
-        icon: 'i-mdi-two-factor-authentication',
-        click: () => login(IdpHint.BCEID)
-      },
-      {
-        label: t('label.idir'),
-        icon: 'i-mdi-account-group-outline',
-        click: () => login(IdpHint.IDIR)
-      }
+  const loginRedirectUrl = loginConfig.redirectPath
+    ? appBaseUrl + locale.value + loginConfig.redirectPath
+    : undefined
+
+  const loginOptionsMap: Record<'bcsc' | 'bceid' | 'idir', { label: string; icon: string; click: () => Promise<void> }> = {
+    bcsc: {
+      label: t('label.bcsc'),
+      icon: 'i-mdi-account-card-details-outline',
+      click: () => login(IdpHint.BCSC, loginRedirectUrl)
+    },
+    bceid: {
+      label: t('label.bceid'),
+      icon: 'i-mdi-two-factor-authentication',
+      click: () => login(IdpHint.BCEID, loginRedirectUrl)
+    },
+    idir: {
+      label: t('label.idir'),
+      icon: 'i-mdi-account-group-outline',
+      click: () => login(IdpHint.IDIR, loginRedirectUrl)
+    }
+  }
+
+  const loggedOutUserOptions = computed<DropdownItem[][]>(() => {
+    const options: DropdownItem[][] = [
+      [
+        {
+          label: 'n/a',
+          slot: 'method',
+          disabled: true
+        }
+      ]
     ]
-  ])
+
+    const idps = loginConfig.idps.map(key => loginOptionsMap[key])
+
+    options.push(idps)
+
+    return options
+  })
 
   const loggedOutUserOptionsMobile = computed<DropdownItem[][]>(() => [
     ...loggedOutUserOptions.value,
