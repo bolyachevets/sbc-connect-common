@@ -7,9 +7,14 @@ export default <Partial<Config>>{
       fontFamily: {
         sans: ['BCSans', 'Verdana', 'Arial', 'sans-serif']
       },
+      listStyleType: {
+        alpha: 'lower-alpha',
+        upperAlpha: 'upper-alpha'
+      },
       maxWidth: {
         bcGovMd: '1020px',
-        bcGovLg: '1360px'
+        bcGovLg: '1360px',
+        bcGovInput: '600px'
       },
       colors: {
         bcGovColor: {
@@ -101,6 +106,32 @@ export default <Partial<Config>>{
           800: '#933e0d',
           900: '#79340e',
           950: '#451903'
+        },
+        green: {
+          50: '#f2fbf4',
+          100: '#e2f6e6',
+          200: '#c6eccd',
+          300: '#99dca6',
+          400: '#65c378',
+          500: '#40a755',
+          600: '#2e8540',
+          700: '#286d37',
+          800: '#24572f',
+          900: '#1f4828',
+          950: '#0c2713'
+        },
+        midnightBlue: {
+          50: '#eef7ff',
+          100: '#dceeff',
+          200: '#b2dfff',
+          300: '#6dc6ff',
+          400: '#20a8ff',
+          500: '#008dff',
+          600: '#006edf',
+          700: '#0057b4',
+          800: '#004a94',
+          900: '#003366',
+          950: '#002651'
         }
       },
       // @ts-ignore: ignore theme as any
