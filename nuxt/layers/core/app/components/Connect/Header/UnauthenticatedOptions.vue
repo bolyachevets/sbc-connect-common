@@ -5,7 +5,7 @@
   >
     <!-- TODO: implement whats new -->
     <!-- whats new slideover -->
-    <!-- <ConnectHeaderUnauthenticatedOptionsWhatsNew class="hidden lg:flex" /> -->
+    <ConnectHeaderWhatsNew class="hidden lg:flex" />
     <!-- login options dropdown or main menu on small screens -->
     <ConnectHeaderLoginOptionsDropdown />
     <!-- create account button, hidden on small screens -->
