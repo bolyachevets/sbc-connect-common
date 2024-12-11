@@ -1,11 +1,17 @@
+<script setup lang="ts">
+import type { HeaderOptions } from '~/interfaces/header-options'
+import { headerOptionsSymbol } from '~/utils/connect-injection-keys'
+
+const config = inject<HeaderOptions>(headerOptionsSymbol)
+</script>
 <template>
   <div
     id="connect-header-auth-options"
     class="flex gap-1"
   >
     <!-- notifications dropdown -->
-    <ConnectHeaderNotifications />
+    <ConnectHeaderNotifications v-if="config?.authenticated.notifications" />
     <!-- account options dropdown -->
-    <ConnectHeaderAccountOptionsDropdown />
+    <ConnectHeaderAccountOptionsDropdown v-if="config?.authenticated.accountOptionsMenu" />
   </div>
 </template>

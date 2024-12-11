@@ -5,7 +5,7 @@ export function useConnectNav () {
   const rtc = useRuntimeConfig()
   const authWebUrl = rtc.public.authWebURL
   const appBaseUrl = rtc.public.baseUrl
-  const loginConfig = useAppConfig().connect.core.login
+  const layerConfig = useAppConfig().connect.core
 
   // const localePath = useLocalePath()
   const { t, locale } = useI18n()
@@ -122,8 +122,8 @@ export function useConnectNav () {
     return options
   })
 
-  const loginRedirectUrl = loginConfig.redirectPath
-    ? appBaseUrl + locale.value + loginConfig.redirectPath
+  const loginRedirectUrl = layerConfig.login.redirectPath
+    ? appBaseUrl + locale.value + layerConfig.login.redirectPath
     : undefined
 
   const loginOptionsMap: Record<'bcsc' | 'bceid' | 'idir', { label: string; icon: string; click: () => Promise<void> }> = {
@@ -155,18 +155,28 @@ export function useConnectNav () {
       ]
     ]
 
-    const idps = loginConfig.idps.map(key => loginOptionsMap[key])
+    const idps = layerConfig.login.idps.map(key => loginOptionsMap[key])
 
     options.push(idps)
 
     return options
   })
 
-  const loggedOutUserOptionsMobile = computed<DropdownItem[][]>(() => [
-    ...loggedOutUserOptions.value,
-    [{ label: t('btn.whatsNew'), slot: 'whats-new', icon: 'i-mdi-new-box', click: () => console.log('whats new clicked') }],
-    [{ label: t('btn.createAccount'), icon: 'i-mdi-plus', to: createAccountUrl() }]
-  ])
+  const loggedOutUserOptionsMobile = computed<DropdownItem[][]>(() => {
+    const options: DropdownItem[][] = []
+
+    if (layerConfig.header.options.unauthenticated.loginMenu) {
+      options.push(...loggedOutUserOptions.value)
+    }
+    if (layerConfig.header.options.unauthenticated.whatsNew) {
+      options.push([{ label: t('btn.whatsNew'), slot: 'whats-new', icon: 'i-mdi-new-box', click: () => console.log('whats new clicked') }])
+    }
+    if (layerConfig.header.options.unauthenticated.createAccount) {
+      options.push([{ label: t('btn.createAccount'), icon: 'i-mdi-plus', to: createAccountUrl() }])
+    }
+
+    return options
+  })
 
   const notificationsOptions = computed<DropdownItem[][]>(() => {
     const count = accountStore.pendingApprovalCount

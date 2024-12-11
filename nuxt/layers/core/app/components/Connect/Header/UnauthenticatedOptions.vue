@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import type { HeaderOptions } from '~/interfaces/header-options'
+import { headerOptionsSymbol } from '~/utils/connect-injection-keys'
+
+const config = inject<HeaderOptions>(headerOptionsSymbol)
+</script>
 <template>
   <div
     id="connect-header-unauth-options"
@@ -5,10 +11,10 @@
   >
     <!-- TODO: implement whats new -->
     <!-- whats new slideover -->
-    <ConnectHeaderWhatsNew class="hidden lg:flex" />
+    <ConnectHeaderWhatsNew v-if="config?.unauthenticated.whatsNew" class="hidden lg:flex" />
     <!-- login options dropdown or main menu on small screens -->
-    <ConnectHeaderLoginOptionsDropdown />
+    <ConnectHeaderLoginOptionsDropdown v-if="config?.unauthenticated.loginMenu" />
     <!-- create account button, hidden on small screens -->
-    <ConnectHeaderCreateAccountBtn class="hidden lg:flex" />
+    <ConnectHeaderCreateAccountBtn v-if="config?.unauthenticated.createAccount" class="hidden lg:flex" />
   </div>
 </template>

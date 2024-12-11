@@ -1,5 +1,25 @@
 export default defineAppConfig({
-  // myLayer: {
-  //   name: 'My amazing Nuxt layer (overwritten)'
-  // }
+  connect: {
+    core: {
+      login: {
+        redirectPath: '',
+        // @ts-expect-error - I think this should be fine when extending the layer but will need to confirm
+        idps: () => ['bcsc', 'idir']
+      },
+      header: {
+        options: {
+          localeSelect: true,
+          unauthenticated: {
+            whatsNew: false,
+            loginMenu: true,
+            createAccount: false
+          },
+          authenticated: {
+            notifications: false,
+            accountOptionsMenu: true
+          }
+        }
+      }
+    }
+  }
 })

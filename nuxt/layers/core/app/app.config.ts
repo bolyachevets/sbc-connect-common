@@ -9,7 +9,7 @@ export default defineAppConfig({
         options: {
           localeSelect: true,
           unauthenticated: {
-            whatsNew: true,
+            whatsNew: false,
             loginMenu: true,
             createAccount: true
           },
@@ -323,30 +323,3 @@ export default defineAppConfig({
     }
   }
 })
-
-declare module '@nuxt/schema' {
-  interface AppConfigInput {
-    connect: {
-      core: {
-        login: {
-          redirectPath: string,
-          idps: ['bcsc', 'bceid', 'idir']
-        },
-        header: {
-          options: {
-            localeSelect: boolean,
-            unauthenticated: {
-              whatsNew: boolean,
-              loginMenu: boolean,
-              createAccount: boolean
-            },
-            authenticated: {
-              notifications: boolean,
-              accountOptionsMenu: boolean
-            }
-          }
-        }
-      }
-    }
-  }
-}

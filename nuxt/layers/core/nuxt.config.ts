@@ -1,7 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import type { ConnectBreadcrumb } from '~/interfaces/connect-breadcrumb'
 
 const currentDir = dirname(fileURLToPath(import.meta.url))
 
@@ -113,10 +112,3 @@ export default defineNuxtConfig({
     storage: 'sessionStorage'
   }
 })
-
-declare module '#app' {
-  interface PageMeta {
-    breadcrumbs?: ConnectBreadcrumb[]
-    hideBreadcrumbs: boolean | undefined
-  }
-}
