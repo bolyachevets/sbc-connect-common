@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { HeaderOptions } from '~/interfaces/header-options'
+import type { HeaderOptions } from '~/types/core-app-config'
 import { headerOptionsSymbol } from '~/utils/connect-injection-keys'
 
 const config = inject<HeaderOptions>(headerOptionsSymbol)
