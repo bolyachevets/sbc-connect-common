@@ -38,18 +38,17 @@ defineProps<{
   >
     <template v-if="heading?.label || $slots.header" #header>
       <slot name="header">
-        <component
-          :is="heading?.level || 'h2'"
-          class="flex justify-between gap-2.5"
-        >
-          <div class="flex items-center gap-2.5">
-            <UIcon
-              v-if="heading?.icon"
-              :name="heading.icon"
-              :class="heading?.iconClass || 'size-6 shrink-0 text-bcGovColor-activeBlue'"
-            />
-            <span :class="heading?.labelClass || 'font-semibold text-bcGovColor-darkGray text-base'">{{ heading?.label }}</span>
-          </div>
+        <div class="flex items-center justify-between gap-2.5">
+          <component :is="heading?.level || 'h2'">
+            <div class="flex items-center gap-2.5">
+              <UIcon
+                v-if="heading?.icon"
+                :name="heading.icon"
+                :class="heading?.iconClass || 'size-6 shrink-0 text-bcGovColor-activeBlue'"
+              />
+              <span :class="heading?.labelClass || 'font-semibold text-bcGovColor-darkGray text-base'">{{ heading?.label }}</span>
+            </div>
+          </component>
 
           <div class="flex items-center gap-2.5">
             <UButton
@@ -62,7 +61,7 @@ defineProps<{
               @click="action.click && action.click()"
             />
           </div>
-        </component>
+        </div>
       </slot>
     </template>
     <slot />

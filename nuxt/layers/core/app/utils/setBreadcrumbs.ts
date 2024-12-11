@@ -1,5 +1,4 @@
-import type { BreadcrumbLink } from '#ui/types'
-export function setBreadcrumbs (breadcrumbs: BreadcrumbLink[]) {
+export function setBreadcrumbs (breadcrumbs: ConnectBreadcrumb[]) {
   const route = useRoute()
   route.meta.breadcrumbs = breadcrumbs
 }

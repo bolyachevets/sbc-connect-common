@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useTestStore } from '~/stores/test-store';
+
 const { isAuthenticated, login, logout } = useKeycloak()
 const ldStore = useConnectLaunchdarklyStore()
 
@@ -16,7 +18,7 @@ const actions = [
 ]
 
 setBreadcrumbs([
-  { label: 'test', to: useRuntimeConfig().public.registryHomeURL },
+  { label: 'test', to: useRuntimeConfig().public.registryHomeURL, appendAccountId: true },
   { label: 'test 2', to: useRuntimeConfig().public.registryHomeURL },
   { label: 'test 3' }
 ])
@@ -49,5 +51,12 @@ onMounted(() => {
     </ConnectPageSection>
 
     <ConnectI18nBold translation-path="test.i18nBold.italic" />
+
+    Core test store {{ useTestStore().testData }}
+
+    <UButton 
+      label="test resetPiniaStores"
+      @click="resetPiniaStores(['core-test-store'])"
+    />
   </div>
 </template>

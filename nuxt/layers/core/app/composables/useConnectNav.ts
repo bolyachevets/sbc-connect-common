@@ -2,10 +2,13 @@ import type { DropdownItem } from '#ui/types'
 
 // handle navigation items and functionality
 export function useConnectNav () {
-  const config = useRuntimeConfig()
-  const authWebUrl = config.public.authWebURL
+  const rtc = useRuntimeConfig()
+  const authWebUrl = rtc.public.authWebURL
+  const appBaseUrl = rtc.public.baseUrl
+  const layerConfig = useAppConfig().connect.core
+
   // const localePath = useLocalePath()
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const { login, logout, isAuthenticated, kcUser } = useKeycloak()
   const accountStore = useConnectAccountStore()
 
@@ -119,38 +122,61 @@ export function useConnectNav () {
     return options
   })
 
-  const loggedOutUserOptions = computed<DropdownItem[][]>(() => [
-    [
-      {
-        label: 'n/a',
-        slot: 'method',
-        disabled: true
-      }
-    ],
-    [
-      {
-        label: t('label.bcsc'),
-        icon: 'i-mdi-account-card-details-outline',
-        click: () => login(IdpHint.BCSC)
-      },
-      {
-        label: t('label.bceid'),
-        icon: 'i-mdi-two-factor-authentication',
-        click: () => login(IdpHint.BCEID)
-      },
-      {
-        label: t('label.idir'),
-        icon: 'i-mdi-account-group-outline',
-        click: () => login(IdpHint.IDIR)
-      }
-    ]
-  ])
+  const loginRedirectUrl = layerConfig.login.redirectPath
+    ? appBaseUrl + locale.value + layerConfig.login.redirectPath
+    : undefined
 
-  const loggedOutUserOptionsMobile = computed<DropdownItem[][]>(() => [
-    ...loggedOutUserOptions.value,
-    [{ label: t('btn.whatsNew'), slot: 'whats-new', icon: 'i-mdi-new-box', click: () => console.log('whats new clicked') }],
-    [{ label: t('btn.createAccount'), icon: 'i-mdi-plus', to: createAccountUrl() }]
-  ])
+  const loginOptionsMap: Record<'bcsc' | 'bceid' | 'idir', { label: string; icon: string; click: () => Promise<void> }> = {
+    bcsc: {
+      label: t('label.bcsc'),
+      icon: 'i-mdi-account-card-details-outline',
+      click: () => login(IdpHint.BCSC, loginRedirectUrl)
+    },
+    bceid: {
+      label: t('label.bceid'),
+      icon: 'i-mdi-two-factor-authentication',
+      click: () => login(IdpHint.BCEID, loginRedirectUrl)
+    },
+    idir: {
+      label: t('label.idir'),
+      icon: 'i-mdi-account-group-outline',
+      click: () => login(IdpHint.IDIR, loginRedirectUrl)
+    }
+  }
+
+  const loggedOutUserOptions = computed<DropdownItem[][]>(() => {
+    const options: DropdownItem[][] = [
+      [
+        {
+          label: 'n/a',
+          slot: 'method',
+          disabled: true
+        }
+      ]
+    ]
+
+    const idps = layerConfig.login.idps.map(key => loginOptionsMap[key])
+
+    options.push(idps)
+
+    return options
+  })
+
+  const loggedOutUserOptionsMobile = computed<DropdownItem[][]>(() => {
+    const options: DropdownItem[][] = []
+
+    if (layerConfig.header.options.unauthenticated.loginMenu) {
+      options.push(...loggedOutUserOptions.value)
+    }
+    if (layerConfig.header.options.unauthenticated.whatsNew) {
+      options.push([{ label: t('btn.whatsNew'), slot: 'whats-new', icon: 'i-mdi-new-box', click: () => console.log('whats new clicked') }])
+    }
+    if (layerConfig.header.options.unauthenticated.createAccount) {
+      options.push([{ label: t('btn.createAccount'), icon: 'i-mdi-plus', to: createAccountUrl() }])
+    }
+
+    return options
+  })
 
   const notificationsOptions = computed<DropdownItem[][]>(() => {
     const count = accountStore.pendingApprovalCount

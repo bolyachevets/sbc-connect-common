@@ -6,9 +6,10 @@ interface ExtendedPinia extends Pinia {
 }
 
 /**
- * Resets all Pinia stores that have a `$reset` method.
-*/
-export function resetPiniaStores (): void {
+ * Resets specific Pinia stores if store IDs are specified. If no IDs are provided, resets all stores that have a `$reset` method.
+ * @param {string[]} storeIds - Array of store IDs to reset. If empty, all stores will be reset.
+ */
+export function resetPiniaStores (storeIds: string[] = []): void {
   const pinia = getActivePinia() as ExtendedPinia
   const env = useRuntimeConfig().public.environment
 
@@ -18,11 +19,13 @@ export function resetPiniaStores (): void {
 
   // null check still fails so must catch error instead
   pinia._s.forEach((store) => {
-    try {
-      store.$reset()
-    } catch {
-      if (env === 'Development') {
-        console.warn(`Store "${store.$id}" does not implement $reset. Skipping reset.`)
+    if (storeIds.length === 0 || storeIds.includes(store.$id)) {
+      try {
+        store.$reset()
+      } catch {
+        if (env === 'Development') {
+          console.warn(`Store "${store.$id}" does not implement $reset. Skipping reset.`)
+        }
       }
     }
   })

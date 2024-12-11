@@ -1,7 +1,7 @@
 import { type ApiError, ErrorCategory } from '#imports'
 /** Manages connect account data */
 export const useConnectAccountStore = defineStore('nuxt-core-connect-account-store', () => {
-  const { $authApi } = useNuxtApp()
+  const { $authApi, $keycloak } = useNuxtApp()
   const { kcUser, isAuthenticated } = useKeycloak()
   // selected user account
   const currentAccount = ref<Account>({} as Account)
@@ -48,30 +48,61 @@ export const useConnectAccountStore = defineStore('nuxt-core-connect-account-sto
   }
 
   /** Get user information from AUTH */
-  function getAuthUserProfile (identifier: string) {
+  // TODO: confirm data returned from auth
+  // {
+  //   "contacts": [],
+  //   "created": "2024-12-11T20:23:08+00:00",
+  //   "email": "test@gmail.com",
+  //   "id": 6089,
+  //   "idpUserid": "stuff",
+  //   "keycloakGuid": "stuff",
+  //   "loginSource": "BCEID",
+  //   "loginTime": "2024-12-11T20:28:53+00:00",
+  //   "modified": "2024-12-11T20:28:53+00:00",
+  //   "modifiedBy": "None None",
+  //   "type": "PUBLIC_USER",
+  //   "userStatus": 1,
+  //   "userTerms": {
+  //       "isTermsOfUseAccepted": false,
+  //       "termsOfUseAcceptedVersion": null
+  //   },
+  //   "username": "stuff",
+  //   "verified": false
+  // }
+  async function getAuthUserProfile (identifier: string) {
+    const authApiURL = useRuntimeConfig().public.authApiURL
     try {
-      return $authApi<KCUser>(`/users/${identifier}`, {
-        onResponseError ({ response }) {
-          errors.value.push({
-            statusCode: response.status || 500,
-            message: response._data?.message || 'Error fetching user info.',
-            detail: response._data.detail || '',
-            category: ErrorCategory.USER_INFO
-          })
+      await updateAuthUserInfo() // update user roles before fetching user info
+      const response = await fetch(`${authApiURL}/users/${identifier}`, { // native fetch doesnt break app
+        headers: {
+          Authorization: `Bearer ${$keycloak.token}`
         }
       })
-    } catch {
-      console.warn('Error fetching user info.')
+      const data = await response.json()
+      if (response.ok) {
+        return data
+      } else {
+        errors.value.push({
+          statusCode: response.status || 500,
+          message: data.message || data.description || 'Error fetching user info.',
+          detail: data.detail || '',
+          category: ErrorCategory.USER_INFO
+        })
+      }
+    } catch (e) {
+      logFetchError(e, 'Error fetching user info.')
     }
   }
 
   /** Update user information in AUTH with current token info */
   async function updateAuthUserInfo (): Promise<void | KCUser> {
     try {
-      return await $authApi<KCUser>('/users', {
+      const response = await $authApi<KCUser>('/users', {
         method: 'POST',
         body: { isLogin: true }
       })
+
+      return response
     } catch (e) {
       logFetchError(e, 'Error updating auth user info')
     }
@@ -82,7 +113,8 @@ export const useConnectAccountStore = defineStore('nuxt-core-connect-account-sto
     if (user.value?.loginSource === LoginSource.BCEID) {
       // get from auth
       const authUserInfo = await getAuthUserProfile('@me')
-      if (authUserInfo) {
+      // firstName and lastName dont always exist it seems ?
+      if (authUserInfo.firstName !== undefined && authUserInfo.lastName !== undefined) {
         userFirstName.value = authUserInfo.firstName
         userLastName.value = authUserInfo.lastName
       }

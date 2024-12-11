@@ -1,50 +1,26 @@
 export default defineAppConfig({
-  // CoreLayer: { // TODO: implement ?
-  //   footerLinks: [
-  //     {
-  //       labelTKey: 'ConnectFooter.home',
-  //       label: '',
-  //       localePath: true,
-  //       to: '/',
-  //       target: ''
-  //     },
-  //     {
-  //       labelTKey: 'ConnectFooter.releaseNotes',
-  //       label: '',
-  //       localePath: false,
-  //       to: 'https://www.release-notes.bcregistry.gov.bc.ca',
-  //       target: '_blank'
-  //     },
-  //     {
-  //       labelTKey: 'ConnectFooter.disclaimer',
-  //       label: '',
-  //       localePath: false,
-  //       to: 'https://www2.gov.bc.ca/gov/content/home/disclaimer',
-  //       target: '_blank'
-  //     },
-  //     {
-  //       labelTKey: 'ConnectFooter.privacy',
-  //       label: '',
-  //       localePath: false,
-  //       to: 'https://www2.gov.bc.ca/gov/content/home/privacy',
-  //       target: '_blank'
-  //     },
-  //     {
-  //       labelTKey: 'ConnectFooter.ally',
-  //       label: '',
-  //       localePath: false,
-  //       to: 'https://www2.gov.bc.ca/gov/content/home/accessibility',
-  //       target: '_blank'
-  //     },
-  //     {
-  //       labelTKey: 'ConnectFooter.copyright',
-  //       label: '',
-  //       localePath: false,
-  //       to: 'https://www2.gov.bc.ca/gov/content/home/copyright',
-  //       target: '_blank'
-  //     }
-  //   ]
-  // },
+  connect: {
+    core: {
+      login: {
+        redirectPath: '',
+        idps: ['bcsc', 'bceid', 'idir']
+      },
+      header: {
+        options: {
+          localeSelect: true,
+          unauthenticated: {
+            whatsNew: false,
+            loginMenu: true,
+            createAccount: true
+          },
+          authenticated: {
+            notifications: true,
+            accountOptionsMenu: true
+          }
+        }
+      }
+    }
+  },
   ui: {
     primary: 'blue',
     gray: 'bcGovGray',
@@ -347,12 +323,3 @@ export default defineAppConfig({
     }
   }
 })
-
-declare module '@nuxt/schema' {
-  interface AppConfigInput {
-    myLayer?: {
-      /** Project name */
-      name?: string
-    }
-  }
-}

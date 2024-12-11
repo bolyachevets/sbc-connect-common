@@ -1,7 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import type { BreadcrumbLink } from '#ui/types'
 
 const currentDir = dirname(fileURLToPath(import.meta.url))
 
@@ -12,6 +11,12 @@ export default defineNuxtConfig({
 
   future: {
     compatibilityVersion: 4
+  },
+
+  nitro: {
+    prerender: {
+      ignore: [] // ignore tos/login pages by default
+    }
   },
 
   css: [join(currentDir, './app/assets/css/main.css')],
@@ -73,7 +78,8 @@ export default defineNuxtConfig({
       appName: process.env.npm_package_name || '',
       registryHomeURL: process.env.NUXT_REGISTRY_HOME_URL,
       version: `BRD UI v${process.env.npm_package_version || ''}`,
-      environment: process.env.NUXT_ENVIRONMENT_HEADER || ''
+      environment: process.env.NUXT_ENVIRONMENT_HEADER || '',
+      baseUrl: process.env.NUXT_BASE_URL
     }
   },
 
@@ -106,9 +112,3 @@ export default defineNuxtConfig({
     storage: 'sessionStorage'
   }
 })
-
-declare module '#app' {
-  interface PageMeta {
-    breadcrumbs?: BreadcrumbLink[]
-  }
-}

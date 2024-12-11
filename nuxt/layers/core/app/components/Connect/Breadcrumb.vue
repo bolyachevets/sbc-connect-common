@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import type { BreadcrumbLink } from '#ui/types'
 const { t } = useI18n()
+const accountStore = useConnectAccountStore()
 
-const breadcrumbs = computed<BreadcrumbLink[]>(() => {
-  const route = useRoute()
+const breadcrumbs = computed<ConnectBreadcrumb[]>(() => {
+  const metaCrumbs = useRoute().meta.breadcrumbs
 
-  if (route.meta.breadcrumbs) {
-    return route.meta.breadcrumbs
+  if (metaCrumbs) {
+    return metaCrumbs.map((bc) => {
+      if (bc.appendAccountId && accountStore.currentAccount.id) {
+        return {
+          ...bc,
+          to: appendUrlParam(bc.to as string, 'accountid', accountStore.currentAccount.id)
+        }
+      }
+      return bc
+    })
   } else {
     return [{ label: t('ConnectBreadcrumb.default') }]
   }
@@ -24,7 +32,10 @@ function resolveBackHref () {
 }
 </script>
 <template>
-  <div class="bg-blue-350">
+  <div
+    v-if="$route.meta.hideBreadcrumbs !== true"
+    class="bg-blue-350"
+  >
     <div class="mx-auto flex max-w-bcGovLg items-center divide-x divide-gray-300 px-4 py-2">
       <UButton
         class="mr-3 mt-px size-[28px] rounded-full px-1 text-blue-500"
