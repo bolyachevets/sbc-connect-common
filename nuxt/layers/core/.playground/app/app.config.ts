@@ -4,7 +4,7 @@ export default defineAppConfig({
       login: {
         redirectPath: '',
         // @ts-expect-error - I think this should be fine when extending the layer but will need to confirm
-        idps: () => ['bcsc', 'idir']
+        idps: () => ['bcsc', 'bceid', 'idir']
       },
       header: {
         options: {
