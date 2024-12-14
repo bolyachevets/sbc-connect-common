@@ -1,19 +1,23 @@
 import DOMPurify from 'dompurify'
 import type { DOMPurifyI } from 'dompurify'
 
-export default defineNuxtPlugin(async () => {
-  let sanitize: DOMPurifyI['sanitize']
+export default defineNuxtPlugin({
+  name: 'core-dompurify-plugin',
+  parallel: true,
+  async setup () {
+    let sanitize: DOMPurifyI['sanitize']
 
-  if (import.meta.server) {
-    const { JSDOM } = await import('jsdom')
-    sanitize = DOMPurify(new JSDOM('').window).sanitize
-  } else {
-    sanitize = DOMPurify.sanitize
-  }
+    if (import.meta.server) {
+      const { JSDOM } = await import('jsdom')
+      sanitize = DOMPurify(new JSDOM('').window).sanitize
+    } else {
+      sanitize = DOMPurify.sanitize
+    }
 
-  return {
-    provide: {
-      sanitize
+    return {
+      provide: {
+        sanitize
+      }
     }
   }
 })
