@@ -24,13 +24,22 @@ setBreadcrumbs([
   { label: 'test 3' }
 ])
 
-onMounted(() => {
-  const test = ldStore.getStoredFlag('allowable-business-passcode-types')
-  console.log('test: ', test)
-  const route = useRoute()
-  console.log(route)
+onMounted(async () => {
+  // const test = ldStore.getStoredFlag('allowable-business-passcode-types')
+  // console.log('test: ', test)
+  // const route = useRoute()
+  // console.log(route)
   const toast = useToast()
   toast.add({ description: 'testing' })
+
+  const { $payApi } = useNuxtApp()
+
+  try {
+    await $payApi(`/fees/STRR/STRATAREG`)
+  } catch (e) {
+    console.error('pay api error: ', e)
+  }
+  
 })
 </script>
 <template>
