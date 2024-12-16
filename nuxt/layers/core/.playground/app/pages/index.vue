@@ -60,7 +60,7 @@ onMounted(async () => {
       some stuff
     </ConnectPageSection>
 
-    <ConnectI18nBold translation-path="test.i18nBold.italic" />
+    <ConnectI18nHelper translation-path="test.i18nBold.italic" />
 
     Core test store {{ useTestStore().testData }}
 
