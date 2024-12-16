@@ -18,7 +18,8 @@ export default {
     },
     accountOptionsMenu: 'Account Options Menu',
     whatsNew: "What's New",
-    mainMenu: 'Main menu'
+    mainMenu: 'Main menu',
+    goHome: 'Go Home'
   },
   label: {
     accountSettings: 'Account Settings',
@@ -60,6 +61,20 @@ export default {
     default: 'Service BC Connect',
     backBtn: 'Go Back',
     arialabel: 'Breadcrumb'
+  },
+  ConnectPage: {
+    error: {
+      404: {
+        title: 'Page Not Found - Service BC Connect',
+        h1: '404 Page Not Found',
+        content: 'This page could not be found or does not exist.'
+      },
+      unknown: {
+        title: 'Unknown Error - Service BC Connect',
+        h1: 'Unknown Error',
+        content: 'An unknown error occured, please refresh the page or try again later.'
+      }
+    }
   },
   test: {
     i18nBold: {

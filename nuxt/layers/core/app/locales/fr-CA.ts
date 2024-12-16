@@ -18,7 +18,8 @@ export default {
     },
     accountOptionsMenu: 'Menu Options du Compte',
     whatsNew: 'Quoi de Neuf',
-    mainMenu: 'Menu principal'
+    mainMenu: 'Menu principal',
+    goHome: "Retour à l'Accueil"
   },
   label: {
     accountSettings: 'Paramètres Compte',
@@ -60,5 +61,19 @@ export default {
     default: 'Service Connect CB',
     backBtn: 'Retour',
     arialabel: "Fil d'Ariane"
+  },
+  ConnectPage: {
+    error: {
+      404: {
+        title: 'Page Introuvable - Service Connect CB',
+        h1: '404 Page Introuvable',
+        content: 'Cette page est introuvable ou n’existe pas.'
+      },
+      unknown: {
+        title: 'Erreur Inconnue - Service Connect CB',
+        h1: 'Erreur Inconnue',
+        content: 'Une erreur inconnue s’est produite, veuillez actualiser la page ou réessayer plus tard.'
+      }
+    }
   }
 }
