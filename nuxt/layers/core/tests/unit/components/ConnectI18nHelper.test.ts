@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { ConnectI18nBold } from '#components'
+import { ConnectI18nHelper } from '#components'
 import { enI18n } from '~~/tests/unit/mocks/i18n'
 
-describe('<ConnectI18nBold />', () => {
+describe('<ConnectI18nHelper />', () => {
   it('should add bold tags around text', async () => {
-    const wrapper = await mountSuspended(ConnectI18nBold, {
+    const wrapper = await mountSuspended(ConnectI18nHelper, {
       props: {
         translationPath: 'test.i18nBold.strong'
       },
@@ -18,7 +18,7 @@ describe('<ConnectI18nBold />', () => {
   })
 
   it('should allow other props', async () => {
-    const wrapper = await mountSuspended(ConnectI18nBold, {
+    const wrapper = await mountSuspended(ConnectI18nHelper, {
       props: {
         translationPath: 'test.i18nBold.strongWithProps',
         prop: 'prop to be added'

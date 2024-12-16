@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useTestStore } from '~/stores/test-store';
 
+const connectNav = useConnectNav()
 const { isAuthenticated, login, logout } = useKeycloak()
 const ldStore = useConnectLaunchdarklyStore()
 
@@ -23,13 +24,22 @@ setBreadcrumbs([
   { label: 'test 3' }
 ])
 
-onMounted(() => {
-  const test = ldStore.getStoredFlag('allowable-business-passcode-types')
-  console.log('test: ', test)
-  const route = useRoute()
-  console.log(route)
+onMounted(async () => {
+  // const test = ldStore.getStoredFlag('allowable-business-passcode-types')
+  // console.log('test: ', test)
+  // const route = useRoute()
+  // console.log(route)
   const toast = useToast()
   toast.add({ description: 'testing' })
+
+  const { $payApi } = useNuxtApp()
+
+  try {
+    await $payApi(`/fees/STRR/STRATAREG`)
+  } catch (e) {
+    console.error('pay api error: ', e)
+  }
+  
 })
 </script>
 <template>
@@ -50,13 +60,23 @@ onMounted(() => {
       some stuff
     </ConnectPageSection>
 
-    <ConnectI18nBold translation-path="test.i18nBold.italic" />
+    <ConnectI18nHelper translation-path="test.i18nBold.italic" />
 
     Core test store {{ useTestStore().testData }}
 
     <UButton 
       label="test resetPiniaStores"
       @click="resetPiniaStores(['core-test-store'])"
+    />
+
+    <UButton 
+      label="Payment Redirect"
+      @click="connectNav.handlePaymentRedirect(123, '/')"
+    />
+    
+    <UButton 
+      label="External Redirect"
+      @click="connectNav.handleExternalRedirect('https://www.bcregistry.gov.bc.ca/', undefined, '_blank')"
     />
   </div>
 </template>
