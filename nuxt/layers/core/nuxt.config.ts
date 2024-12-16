@@ -82,7 +82,8 @@ export default defineNuxtConfig({
       registryHomeURL: process.env.NUXT_REGISTRY_HOME_URL,
       version: `BRD UI v${process.env.npm_package_version || ''}`,
       environment: process.env.NUXT_ENVIRONMENT_HEADER || '',
-      baseUrl: process.env.NUXT_BASE_URL
+      baseUrl: process.env.NUXT_BASE_URL,
+      paymentPortalUrl: process.env.NUXT_PAYMENT_PORTAL_URL
     }
   },
 

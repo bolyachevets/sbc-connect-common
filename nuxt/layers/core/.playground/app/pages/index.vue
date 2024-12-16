@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useTestStore } from '~/stores/test-store';
 
+const connectNav = useConnectNav()
 const { isAuthenticated, login, logout } = useKeycloak()
 const ldStore = useConnectLaunchdarklyStore()
 
@@ -57,6 +58,16 @@ onMounted(() => {
     <UButton 
       label="test resetPiniaStores"
       @click="resetPiniaStores(['core-test-store'])"
+    />
+
+    <UButton 
+      label="Payment Redirect"
+      @click="connectNav.handlePaymentRedirect(123, '/')"
+    />
+    
+    <UButton 
+      label="External Redirect"
+      @click="connectNav.handleExternalRedirect('https://www.bcregistry.gov.bc.ca/', undefined, '_blank')"
     />
   </div>
 </template>

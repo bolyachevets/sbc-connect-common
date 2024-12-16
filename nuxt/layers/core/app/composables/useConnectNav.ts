@@ -7,7 +7,7 @@ export function useConnectNav () {
   const appBaseUrl = rtc.public.baseUrl
   const layerConfig = useAppConfig().connect.core
 
-  // const localePath = useLocalePath()
+  const localePath = useLocalePath()
   const { t, locale } = useI18n()
   const { login, logout, isAuthenticated, kcUser } = useKeycloak()
   const accountStore = useConnectAccountStore()
@@ -193,6 +193,27 @@ export function useConnectNav () {
     return options
   })
 
+  function handleExternalRedirect (url: string, params?: { [key: string]: string }, target = '_self') {
+    // get account id and set in params
+    const redirectURL = new URL(url)
+    const accountId = accountStore.currentAccount.id
+    if (accountId) {
+      redirectURL.searchParams.append('accountid', accountId.toString())
+    }
+    for (const [key, value] of Object.entries(params ?? {})) {
+      redirectURL.searchParams.append(key, value)
+    }
+    // assume URL is always reachable
+    window.open(redirectURL, target)
+  }
+
+  async function handlePaymentRedirect (paymentToken: number, redirectPath: string): Promise<void> {
+    const returnUrl = encodeURIComponent(window.location.origin + localePath(redirectPath))
+    const payUrl = rtc.public.paymentPortalUrl + paymentToken + '/' + returnUrl
+
+    await navigateTo(payUrl, { external: true })
+  }
+
   return {
     basicAccountOptions,
     accountSettingsOptions,
@@ -202,6 +223,8 @@ export function useConnectNav () {
     loggedOutUserOptions,
     loggedOutUserOptionsMobile,
     notificationsOptions,
-    createAccountUrl
+    createAccountUrl,
+    handleExternalRedirect,
+    handlePaymentRedirect
   }
 }
