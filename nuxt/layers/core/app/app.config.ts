@@ -18,6 +18,18 @@ export default defineAppConfig({
             accountOptionsMenu: true
           }
         }
+      },
+      plugin: {
+        authApi: {
+          errorRedirect: {
+            401: '/'
+          }
+        },
+        payApi: {
+          errorRedirect: {
+            401: '/'
+          }
+        }
       }
     }
   },

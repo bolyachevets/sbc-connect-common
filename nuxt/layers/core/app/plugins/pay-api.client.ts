@@ -4,6 +4,7 @@ export default defineNuxtPlugin({
   dependsOn: ['core-keycloak-plugin'],
   setup () {
     const payApiUrl = useRuntimeConfig().public.payApiURL
+    const errorRedirectPath = useAppConfig().connect.core.plugin.payApi.errorRedirect[401]
     const { $keycloak } = useNuxtApp()
     const localePath = useLocalePath()
 
@@ -21,7 +22,7 @@ export default defineNuxtPlugin({
       },
       async onResponseError ({ response }) {
         if (response.status === 401) {
-          await navigateTo(localePath('/'))
+          await navigateTo(localePath(errorRedirectPath))
         }
       }
     })

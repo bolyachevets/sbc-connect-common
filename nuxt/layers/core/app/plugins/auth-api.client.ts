@@ -4,7 +4,9 @@ export default defineNuxtPlugin({
   dependsOn: ['core-keycloak-plugin'],
   setup () {
     const authApiUrl = useRuntimeConfig().public.authApiURL
+    const errorRedirectPath = useAppConfig().connect.core.plugin.authApi.errorRedirect[401]
     const { $keycloak } = useNuxtApp()
+    const localePath = useLocalePath()
 
     const api = $fetch.create({
       baseURL: authApiUrl,
@@ -20,7 +22,7 @@ export default defineNuxtPlugin({
       },
       async onResponseError ({ response }) {
         if (response.status === 401) {
-          await navigateTo('/')
+          await navigateTo(localePath(errorRedirectPath))
         }
       }
     })

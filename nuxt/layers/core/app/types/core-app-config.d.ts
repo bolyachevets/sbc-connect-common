@@ -23,6 +23,18 @@ declare module '@nuxt/schema' {
         login: LoginConfig,
         header: {
           options: HeaderOptions
+        },
+        plugin: {
+          authApi: {
+            errorRedirect: {
+              401: string
+            }
+          },
+          payApi: {
+            errorRedirect: {
+              401: string
+            }
+          }
         }
       }
     }
