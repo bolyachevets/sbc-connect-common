@@ -19,7 +19,10 @@ export default defineNuxtConfig({
     }
   },
 
-  css: [join(currentDir, './app/assets/css/main.css')],
+  css: [
+    join(currentDir, './app/assets/css/core-main.css'),
+    join(currentDir, './app/assets/css/core-layout.css')
+  ],
 
   modules: [
     '@nuxt/ui',
