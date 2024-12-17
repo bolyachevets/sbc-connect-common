@@ -2,6 +2,7 @@ export default defineNuxtPlugin({
   name: 'core-auth-api-plugin',
   parallel: true,
   dependsOn: ['core-keycloak-plugin'],
+  enforce: 'post',
   setup () {
     const authApiUrl = useRuntimeConfig().public.authApiURL
     const errorRedirectPath = useAppConfig().connect.core.plugin.authApi.errorRedirect[401]

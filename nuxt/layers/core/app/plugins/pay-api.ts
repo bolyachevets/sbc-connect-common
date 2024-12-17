@@ -2,6 +2,7 @@ export default defineNuxtPlugin({
   name: 'core-pay-api-plugin',
   parallel: true,
   dependsOn: ['core-keycloak-plugin'],
+  enforce: 'post',
   setup () {
     const payApiUrl = useRuntimeConfig().public.payApiURL
     const errorRedirectPath = useAppConfig().connect.core.plugin.payApi.errorRedirect[401]
