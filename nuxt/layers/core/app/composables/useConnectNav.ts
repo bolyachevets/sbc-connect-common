@@ -8,7 +8,8 @@ export function useConnectNav () {
   const layerConfig = useAppConfig().connect.core
 
   const localePath = useLocalePath()
-  const { t, locale } = useI18n()
+  const t = useNuxtApp().$i18n.t
+  const locale = useNuxtApp().$i18n.locale.value
   const { login, logout, isAuthenticated, kcUser } = useKeycloak()
   const accountStore = useConnectAccountStore()
 
@@ -123,7 +124,7 @@ export function useConnectNav () {
   })
 
   const loginRedirectUrl = layerConfig.login.redirectPath
-    ? appBaseUrl + locale.value + layerConfig.login.redirectPath
+    ? appBaseUrl + locale + layerConfig.login.redirectPath
     : undefined
 
   const loginOptionsMap: Record<'bcsc' | 'bceid' | 'idir', { label: string; icon: string; click: () => Promise<void> }> = {
