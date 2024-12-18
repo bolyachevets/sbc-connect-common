@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useTestStore } from '~/stores/test-store';
+import { handleAccountChange } from '../utils/handleAccountChange';
 
 const connectNav = useConnectNav()
+const localePath = useLocalePath()
 const { isAuthenticated, login, logout } = useKeycloak()
 const ldStore = useConnectLaunchdarklyStore()
 
@@ -17,6 +19,10 @@ const actions = [
     external: true
   }
 ]
+
+definePageMeta({
+  onAccountChange: (newAccount, oldAccount) => handleAccountChange(newAccount, oldAccount)
+})
 
 setBreadcrumbs([
   { label: 'test', to: useRuntimeConfig().public.registryHomeURL, appendAccountId: true },
@@ -47,6 +53,9 @@ onMounted(async () => {
     <h1>
       Testing
     </h1>
+
+    <UButton label="test 2 page" :to="localePath('/test-2')" />
+
     <ClientOnly>
       <UButton v-if="!isAuthenticated" label="Login" @click="login(IdpHint.BCSC)" />
       <UButton v-else-if="isAuthenticated" label="Logout" @click="logout()" />

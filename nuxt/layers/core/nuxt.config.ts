@@ -115,14 +115,5 @@ export default defineNuxtConfig({
 
   piniaPersistedstate: {
     storage: 'sessionStorage'
-  },
-
-  plugins: [
-    join(currentDir, './app/plugins/connect-core/01.keycloak.client'),
-    join(currentDir, './app/plugins/connect-core/auth-api'),
-    join(currentDir, './app/plugins/connect-core/pay-api'),
-    join(currentDir, './app/plugins/connect-core/dompurify'),
-    join(currentDir, './app/plugins/connect-core/launchdarkly.client'),
-    join(currentDir, './app/plugins/connect-core/maska')
-  ]
+  }
 })

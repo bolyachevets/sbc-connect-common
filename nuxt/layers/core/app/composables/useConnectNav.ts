@@ -6,7 +6,7 @@ export function useConnectNav () {
   const authWebUrl = rtc.public.authWebURL
   const appBaseUrl = rtc.public.baseUrl
   const layerConfig = useAppConfig().connect.core
-
+  const route = useRoute()
   const localePath = useLocalePath()
   const t = useNuxtApp().$i18n.t
   const locale = useNuxtApp().$i18n.locale.value
@@ -85,7 +85,14 @@ export function useConnectNav () {
           label: account.label,
           click: () => {
             if (!isActive && account.id) {
-              accountStore.switchCurrentAccount(account.id)
+              if (route.meta.onAccountChange) {
+                const allowAccountChange = route.meta.onAccountChange(accountStore.currentAccount, account)
+                if (allowAccountChange) {
+                  accountStore.switchCurrentAccount(account.id)
+                }
+              } else {
+                accountStore.switchCurrentAccount(account.id)
+              }
             }
           },
           icon: isActive ? 'i-mdi-check' : '',
