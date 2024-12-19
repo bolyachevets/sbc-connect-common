@@ -6,7 +6,7 @@ export default defineAppConfig({
         idps: ['bcsc', 'bceid', 'idir']
       },
       header: {
-        options: {
+        options: { // display/hide items
           localeSelect: true,
           unauthenticated: {
             whatsNew: false,

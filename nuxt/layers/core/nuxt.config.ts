@@ -115,11 +115,5 @@ export default defineNuxtConfig({
 
   piniaPersistedstate: {
     storage: 'sessionStorage'
-  },
-
-  plugins: [
-    join(currentDir, './app/plugins/01.keycloak.client.ts'),
-    join(currentDir, './app/plugins/auth-api.ts'),
-    join(currentDir, './app/plugins/pay-api.ts')
-  ]
+  }
 })
