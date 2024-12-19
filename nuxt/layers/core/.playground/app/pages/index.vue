@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useTestStore } from '~/stores/test-store';
-import { handleAccountChange } from '../utils/handleAccountChange';
+import { manageAccountChange } from '../utils/manageAccountChange';
 
 const connectNav = useConnectNav()
 const localePath = useLocalePath()
@@ -21,7 +21,7 @@ const actions = [
 ]
 
 definePageMeta({
-  onAccountChange: (newAccount, oldAccount) => handleAccountChange(newAccount, oldAccount)
+  onAccountChange: (newAccount, oldAccount) => manageAccountChange(newAccount, oldAccount)
 })
 
 setBreadcrumbs([

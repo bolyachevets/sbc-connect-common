@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { handleAccountChangeAbort } from '../utils/handleAccountChangeAbort';
+import { manageAccountChangeAbort } from '../utils/manageAccountChangeAbort';
 const localePath = useLocalePath()
 
 setBreadcrumbs([
@@ -7,7 +7,7 @@ setBreadcrumbs([
 ])
 
 definePageMeta({
-  onAccountChange: (newAccount, oldAccount) => handleAccountChangeAbort(newAccount, oldAccount)
+  onAccountChange: (newAccount, oldAccount) => manageAccountChangeAbort(newAccount, oldAccount)
 })
 </script>
 <template>
