@@ -20,6 +20,9 @@ dependencies:
   '@nuxtjs/i18n':
     specifier: ^8.5.6
     version: 8.5.6(rollup@4.29.1)(vue@3.5.13)
+  '@pinia/nuxt':
+    specifier: ^0.9.0
+    version: 0.9.0(pinia@2.3.0)(rollup@4.29.1)
   '@vueuse/nuxt':
     specifier: ^12.2.0
     version: 12.2.0(nuxt@3.15.0)(rollup@4.29.1)(typescript@5.7.2)
@@ -38,6 +41,9 @@ dependencies:
   maska:
     specifier: ^3.0.4
     version: 3.0.4
+  pinia:
+    specifier: ^2.3.0
+    version: 2.3.0(typescript@5.7.2)(vue@3.5.13)
   pinia-plugin-persistedstate:
     specifier: ^4.2.0
     version: 4.2.0(@pinia/nuxt@0.9.0)(pinia@2.3.0)(rollup@4.29.1)
@@ -55,9 +61,6 @@ devDependencies:
   '@nuxtjs/eslint-config-typescript':
     specifier: ^12.1.0
     version: 12.1.0(eslint@8.57.1)(typescript@5.7.2)
-  '@pinia/nuxt':
-    specifier: ^0.9.0
-    version: 0.9.0(pinia@2.3.0)(rollup@4.29.1)
   '@testing-library/vue':
     specifier: ^8.1.0
     version: 8.1.0(vue@3.5.13)
@@ -88,9 +91,6 @@ devDependencies:
   ora:
     specifier: ^8.1.1
     version: 8.1.1
-  pinia:
-    specifier: ^2.3.0
-    version: 2.3.0(typescript@5.7.2)(vue@3.5.13)
   typescript:
     specifier: ^5.7.2
     version: 5.7.2
@@ -1972,6 +1972,7 @@ packages:
       - magicast
       - rollup
       - supports-color
+    dev: false
 
   /@pkgjs/parseargs@0.11.0:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -8177,6 +8178,7 @@ packages:
       vue-demi: 0.14.10(vue@3.5.13)
     transitivePeerDependencies:
       - '@vue/composition-api'
+    dev: false
 
   /pirates@4.0.6:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
@@ -10702,6 +10704,7 @@ packages:
         optional: true
     dependencies:
       vue: 3.5.13(typescript@5.7.2)
+    dev: false
 
   /vue-devtools-stub@0.1.0:
     resolution: {integrity: sha512-RutnB7X8c5hjq39NceArgXg28WZtZpGc3+J16ljMiYnFhKvd8hITxSWQSQ5bvldxMDU6gG5mkxl1MTQLXckVSQ==}
