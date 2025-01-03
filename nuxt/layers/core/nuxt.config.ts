@@ -28,7 +28,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/content',
     '@pinia/nuxt',
-    '@pinia-plugin-persistedstate/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/i18n',
     '@vueuse/nuxt',
     '@nuxt/image'
@@ -113,7 +113,7 @@ export default defineNuxtConfig({
     vueI18n: './i18n.config.ts'
   },
 
-  piniaPersistedstate: {
+  piniaPluginPersistedstate: {
     storage: 'sessionStorage'
   }
 })

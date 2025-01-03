@@ -3,7 +3,6 @@
         "@nuxt/image": "^1.7.0",
         "@nuxt/test-utils": "^3.13.1",
         "@nuxtjs/eslint-config-typescript": "^12.1.0",
-        "@nuxtjs/eslint-module": "^4.1.0",
         "@testing-library/vue": "^8.1.0",
         "@typescript-eslint/parser": "^7.16.0",
         "@vitest/coverage-v8": "1.6.0",
@@ -15,7 +14,17 @@
         "ora": "^8.0.1",
         "typescript": "^5.5.3",
         "vitest": "^1.6.0",
-        "vue": "latest",
+        "vue": "^3.5.0",
         "vue-router": "^4.4.0"
+    },
+    "overrides": {
+        "nuxt": {
+            "vue": "^3.5.0"
+        }
+    },
+    "pnpm": {
+        "overrides": {
+          "vite": "5.4.11"
+        }
     }
 }
