@@ -191,6 +191,38 @@ export const useConnectAccountStore = defineStore('nuxt-core-connect-account-sto
     }
   }
 
+  async function checkAccountStatus () {
+    // redirect if account status is suspended or in review
+    if ([AccountStatus.NSF_SUSPENDED, AccountStatus.SUSPENDED].includes(currentAccount.value?.accountStatus)) {
+      // Avoid redirecting when navigating back from PAYBC for NSF or signout.
+      const endPath = useRoute().path.split('/').pop() as string
+      const isAllowedPath = ['return-cc-payment', 'signout'].includes(endPath)
+      if (!isAllowedPath) {
+        // URL not allowed so redirect
+        const redirectUrl = `${useRuntimeConfig().public.authWebURL}/account-freeze`
+        // TODO: should probably change this to check 'appName' when auth starts using the core layer
+        const external = useRuntimeConfig().public.authWebURL !== useRuntimeConfig().public.baseUrl
+        await navigateTo(redirectUrl, { external })
+      }
+    } else if (currentAccount.value?.accountStatus === AccountStatus.PENDING_STAFF_REVIEW) {
+      // check the path is allowed for pending approval account
+      const endPath = useRoute().path.split('/').pop() as string
+      const isAllowedPath = ['setup-non-bcsc-account', 'signout'].includes(endPath)
+      if (!isAllowedPath) {
+        // URL not allowed so redirect
+        // TODO: auth web pending approval page is not displaying the encoded name correctly.
+        // It would be better if we could pass the account id here and then the pending page could infer the name.
+        // const accountNameEncoded = encodeURIComponent(btoa(currentAccount.value?.id))
+        // Temporary: remove spaces and it shows something legible at least
+        const accountNameEncoded = currentAccount.value?.label?.replaceAll(' ', '')
+        const redirectUrl = `${useRuntimeConfig().public.authWebURL}/pendingapproval/${accountNameEncoded}/true`
+        // TODO: should probably change this to check 'appName' when auth starts using the core layer
+        const external = useRuntimeConfig().public.authWebURL !== useRuntimeConfig().public.baseUrl
+        await navigateTo(redirectUrl, { external })
+      }
+    }
+  }
+
   function $reset () {
     sessionStorage.removeItem('nuxt-core-connect-account-store')
     currentAccount.value = {} as Account
@@ -207,6 +239,7 @@ export const useConnectAccountStore = defineStore('nuxt-core-connect-account-sto
     errors,
     userFullName,
     isStaffOrSbcStaff,
+    checkAccountStatus,
     updateAuthUserInfo,
     setUserName,
     hasRoles,
