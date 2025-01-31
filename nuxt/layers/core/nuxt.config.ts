@@ -66,6 +66,11 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: ['keycloak-js', 'js-sha256']
+    },
+    server: {
+      watch: {
+        usePolling: true
+      }
     }
   },
 

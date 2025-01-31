@@ -3,6 +3,7 @@ declare module '#app' {
     breadcrumbs?: ConnectBreadcrumb[]
     hideBreadcrumbs?: boolean | undefined
     onAccountChange?: (newVal: Account, oldVal: Account) => boolean
+    onSessionExpired?: () => void
   }
 }
 

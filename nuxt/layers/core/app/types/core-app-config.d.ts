@@ -35,6 +35,41 @@ declare module '@nuxt/schema' {
               401: string
             }
           }
+        },
+        keycloak?: {
+          refreshIntervalTimeout: number
+          minValidity: number
+          idleTimeout: number
+        }
+      }
+    }
+  }
+}
+
+declare module 'nuxt/schema' {
+  interface AppConfig {
+    connect: {
+      core: {
+        login: LoginConfig,
+        header: {
+          options: HeaderOptions
+        },
+        plugin: {
+          authApi: {
+            errorRedirect: {
+              401: string
+            }
+          },
+          payApi: {
+            errorRedirect: {
+              401: string
+            }
+          }
+        },
+        keycloak?: {
+          refreshIntervalTimeout: number
+          minValidity: number
+          idleTimeout: number
         }
       }
     }

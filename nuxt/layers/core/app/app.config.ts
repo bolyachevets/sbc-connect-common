@@ -30,6 +30,11 @@ export default defineAppConfig({
             401: '/'
           }
         }
+      },
+      keycloak: {
+        refreshIntervalTimeout: 30000, // token will schedule refresh check every 30 seconds
+        minValidity: 120, // token min validity 120 seconds
+        idleTimeout: 30 * 60000 // user inactivity triggered after 30 minutes
       }
     }
   },

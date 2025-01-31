@@ -21,7 +21,8 @@ const actions = [
 ]
 
 definePageMeta({
-  onAccountChange: (newAccount, oldAccount) => manageAccountChange(newAccount, oldAccount)
+  onAccountChange: (newAccount, oldAccount) => manageAccountChange(newAccount, oldAccount),
+  onSessionExpired: () => console.log('session expired route meta')
 })
 
 setBreadcrumbs([
