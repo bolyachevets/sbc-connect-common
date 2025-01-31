@@ -44,7 +44,6 @@ onMounted(() => {
         {{ $t(`ConnectPage.error.${errorKey}.h1`) }}
       </h1>
       <p>{{ $t(`ConnectPage.error.${errorKey}.content`) }}</p>
-      <pre>{{ errorObj }}</pre>
       <UButton
         :label="$t('btn.goHome')"
         icon="i-mdi-home"
