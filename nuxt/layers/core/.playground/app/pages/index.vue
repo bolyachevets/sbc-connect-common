@@ -29,7 +29,7 @@ async function asyncFunction() {
 
 definePageMeta({
   onAccountChange: (newAccount, oldAccount) => manageAccountChange(newAccount, oldAccount),
-  sessionExpiredFn: () => console.log('session expired route meta'), // overwrite session expiry functionality
+  // sessionExpiredFn: () => console.log('session expired route meta'), // overwrite session expiry functionality
   // onBeforeSessionExpired: async () => await asyncFunction() // do something before session is expired using the default functionality
 })
 

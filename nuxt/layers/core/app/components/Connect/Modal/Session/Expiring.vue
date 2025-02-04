@@ -30,9 +30,17 @@ function closeModal () {
   modalModel.value = false
 }
 
-// allow any keypress to close the modal
-onMounted(() => {
+onMounted(async () => {
+  // allow any keypress to close the modal
   window.addEventListener('keydown', closeModal)
+
+  // cant add directly to UModal so using this instead
+  await nextTick()
+  const el = document.getElementById('session-expired-dialog')
+  if (el) {
+    el.setAttribute('aria-labelledby', 'session-expired-dialog-title')
+    el.setAttribute('aria-describedby', 'session-expired-dialog-description')
+  }
 })
 onUnmounted(() => {
   window.removeEventListener('keydown', closeModal)
@@ -40,9 +48,11 @@ onUnmounted(() => {
 </script>
 <template>
   <UModal
+    id="session-expired-dialog"
     v-model="modalModel"
     overlay
     :ui="{ width: 'w-full sm:max-w-lg md:min-w-min' }"
+    role="alertdialog"
     @after-leave="$emit('afterLeave')"
   >
     <UCard
@@ -67,11 +77,19 @@ onUnmounted(() => {
       }"
     >
       <template #header>
-        <span class="text-xl font-semibold text-bcGovColor-darkGray">{{ $t('ConnectModalSessionExpiring.title') }}</span>
+        <div role="alert">
+          <h2
+            id="session-expired-dialog-title"
+            class="text-xl font-semibold text-bcGovColor-darkGray"
+          >
+            {{ $t('ConnectModalSessionExpiring.title') }}
+          </h2>
+        </div>
       </template>
 
       <div>
         <ConnectI18nHelper
+          id="session-expired-dialog-description"
           translation-path="ConnectModalSessionExpiring.content"
           :count="timeRemaining"
         />
