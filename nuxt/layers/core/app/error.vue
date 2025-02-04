@@ -18,11 +18,6 @@ useHead({
   title: errorKey === 404 ? t('ConnectPage.error.404.title') : t('ConnectPage.error.unknown.title')
 })
 
-const manageError = async () => {
-  clearError()
-  await navigateTo(localePath('/'))
-}
-
 const errorObj = {
   name: props.error?.name || '',
   cause: props.error?.cause || '',
@@ -48,7 +43,7 @@ onMounted(() => {
         :label="$t('btn.goHome')"
         icon="i-mdi-home"
         size="bcGov"
-        @click="manageError"
+        :to="localePath('/')"
       />
     </div>
   </NuxtLayout>
