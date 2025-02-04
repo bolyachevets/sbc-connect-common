@@ -17,8 +17,6 @@ setInterval(() => {
 const ariaCountdownText = computed(() => {
   if (timeRemaining.value === 30) { // trigger aria alert when 30 seconds remain
     return t('ConnectModalSessionExpiring.content', { count: timeRemaining.value })
-  } else if (timeRemaining.value === 10) { // trigger aria alert when 10 seconds remain
-    return t('ConnectModalSessionExpiring.content', { count: timeRemaining.value })
   } else if (timeRemaining.value === 2) { // trigger aria alert when session expires
     return t('ConnectModalSessionExpiring.sessionExpired')
   } else {
@@ -34,7 +32,7 @@ onMounted(async () => {
   // allow any keypress to close the modal
   window.addEventListener('keydown', closeModal)
 
-  // cant add directly to UModal so using this instead
+  // cant add these props directly to UModal so using this as workaround
   await nextTick()
   const el = document.getElementById('session-expired-dialog')
   if (el) {
@@ -43,6 +41,7 @@ onMounted(async () => {
   }
 })
 onUnmounted(() => {
+  // cleanup
   window.removeEventListener('keydown', closeModal)
 })
 </script>

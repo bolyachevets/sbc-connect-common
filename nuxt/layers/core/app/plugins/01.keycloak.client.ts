@@ -95,6 +95,7 @@ export default defineNuxtPlugin(async () => {
       }
       // re-schedule only if the user remains active and authenticated
       if (keycloak.authenticated && !idle.value) {
+        console.info('Starting token refresh schedule.')
         scheduleRefreshToken()
       }
     }, refreshIntervalTimeout)
