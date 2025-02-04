@@ -55,8 +55,6 @@ export default defineNuxtPlugin(async () => {
         await result
       }
     } else {
-      useConnectModals().openSessionExpiringModal(resetSessionTimeout)
-
       // cleanup modal timeout if exists
       resetSessionTimeout()
 
@@ -71,6 +69,9 @@ export default defineNuxtPlugin(async () => {
         sessionStorage.setItem(ConnectStorageKeys.CONNECT_SESSION_EXPIRED, 'true')
         keycloak.logout()
       }, modalTimeout)
+
+      // open modal and pass resetSessionTimeout as a callback to clear the timeout if the user closes the modal with click/keyboard event
+      useConnectModals().openSessionExpiringModal(resetSessionTimeout)
     }
   }
 
