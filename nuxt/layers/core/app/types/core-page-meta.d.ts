@@ -3,8 +3,8 @@ declare module '#app' {
     breadcrumbs?: ConnectBreadcrumb[]
     hideBreadcrumbs?: boolean | undefined
     onAccountChange?: (newVal: Account, oldVal: Account) => boolean
-    onSessionExpired?: () => void
-    onBeforeSessionExpired?: () => void | Promise<void>
+    sessionExpiredFn?: () => void | Promise<void> // replace default functionality
+    onBeforeSessionExpired?: () => void | Promise<void> // do something right before the default session expiry is executed
   }
 }
 

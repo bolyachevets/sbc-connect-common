@@ -15,9 +15,11 @@ setInterval(() => {
 }, 1000)
 
 const ariaCountdownText = computed(() => {
-  if (timeRemaining.value % 10 === 0) {
+  if (timeRemaining.value === 30) { // trigger aria alert when 30 seconds remain
     return t('ConnectModalSessionExpiring.content', { count: timeRemaining.value })
-  } else if (timeRemaining.value === 2) {
+  } else if (timeRemaining.value === 10) { // trigger aria alert when 10 seconds remain
+    return t('ConnectModalSessionExpiring.content', { count: timeRemaining.value })
+  } else if (timeRemaining.value === 2) { // trigger aria alert when session expires
     return t('ConnectModalSessionExpiring.sessionExpired')
   } else {
     return ''

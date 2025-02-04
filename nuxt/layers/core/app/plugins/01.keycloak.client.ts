@@ -48,9 +48,12 @@ export default defineNuxtPlugin(async () => {
 
   // executed when user is authenticated and idle = true
   // if route meta provided, override default behaviour
-  function sessionExpiredFn () {
-    if (route.meta.onSessionExpired) {
-      route.meta.onSessionExpired()
+  async function sessionExpired () {
+    if (route.meta.sessionExpiredFn) {
+      const result = route.meta.sessionExpiredFn()
+      if (result instanceof Promise) {
+        await result
+      }
     } else {
       useConnectModals().openSessionExpiringModal(resetSessionTimeout)
 
@@ -60,7 +63,10 @@ export default defineNuxtPlugin(async () => {
       // start countdown until user logged out
       modalTimeoutId = setTimeout(async () => {
         if (route.meta.onBeforeSessionExpired) {
-          await route.meta.onBeforeSessionExpired()
+          const result = route.meta.onBeforeSessionExpired()
+          if (result instanceof Promise) {
+            await result
+          }
         }
         sessionStorage.setItem(ConnectStorageKeys.CONNECT_SESSION_EXPIRED, 'true')
         keycloak.logout()
@@ -98,13 +104,13 @@ export default defineNuxtPlugin(async () => {
   // Execute session expiry handling if user authenticated and inactive
   watch(
     [() => keycloak.authenticated, () => idle.value],
-    ([isAuth, isIdle]) => {
+    async ([isAuth, isIdle]) => {
       if (isAuth) {
         sessionStorage.removeItem(ConnectStorageKeys.CONNECT_SESSION_EXPIRED)
         if (!isIdle) {
           scheduleRefreshToken()
         } else {
-          sessionExpiredFn()
+          await sessionExpired()
         }
       }
     },
