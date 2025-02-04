@@ -35,11 +35,6 @@ declare module '@nuxt/schema' {
               401: string
             }
           }
-        },
-        keycloak?: {
-          refreshIntervalTimeout: number
-          minValidity: number
-          idleTimeout: number
         }
       }
     }
@@ -65,11 +60,6 @@ declare module 'nuxt/schema' {
               401: string
             }
           }
-        },
-        keycloak?: {
-          refreshIntervalTimeout: number
-          minValidity: number
-          idleTimeout: number
         }
       }
     }

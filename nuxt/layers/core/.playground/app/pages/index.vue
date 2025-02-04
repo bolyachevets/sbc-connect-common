@@ -20,9 +20,17 @@ const actions = [
   }
 ]
 
+async function asyncFunction() {
+  return new Promise<void>((resolve) => setTimeout(() => {
+    console.log("test async")
+    resolve()
+  }, 5000))
+}
+
 definePageMeta({
   onAccountChange: (newAccount, oldAccount) => manageAccountChange(newAccount, oldAccount),
-  onSessionExpired: () => console.log('session expired route meta')
+  // onSessionExpired: () => console.log('session expired route meta'), // overwrite session expiry functionality
+  onBeforeSessionExpired: async () => await asyncFunction() // do something before session is expired using the default functionality
 })
 
 setBreadcrumbs([

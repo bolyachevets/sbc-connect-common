@@ -4,6 +4,7 @@ declare module '#app' {
     hideBreadcrumbs?: boolean | undefined
     onAccountChange?: (newVal: Account, oldVal: Account) => boolean
     onSessionExpired?: () => void
+    onBeforeSessionExpired?: () => void | Promise<void>
   }
 }
 

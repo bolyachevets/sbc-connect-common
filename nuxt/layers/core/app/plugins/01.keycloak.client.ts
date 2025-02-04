@@ -2,7 +2,6 @@ import Keycloak from 'keycloak-js'
 
 export default defineNuxtPlugin(async () => {
   const rtc = useRuntimeConfig().public
-  const kcConfig = useAppConfig().connect.core.keycloak
 
   // define new keycloak
   const keycloak = new Keycloak({
@@ -10,10 +9,6 @@ export default defineNuxtPlugin(async () => {
     realm: rtc.keycloakRealm,
     clientId: rtc.keycloakClientId
   })
-
-  const refreshIntervalTimeout = kcConfig.refreshIntervalTimeout
-  const minValidity = kcConfig.minValidity
-  const idleTimeout = kcConfig.idleTimeout
 
   try {
     // init keycloak instance
@@ -26,14 +21,50 @@ export default defineNuxtPlugin(async () => {
     console.error('Failed to initialize Keycloak adapter: ', error)
   }
 
+  // default behaviour when keycloak session expires
+  // try to update token - log out if token update fails
+  keycloak.onTokenExpired = async () => {
+    await keycloak.updateToken(minValidity).catch(() => {
+      console.error('Failed to refresh token on expiration; logging out.')
+      keycloak.logout()
+    })
+  }
+
+  const refreshIntervalTimeout = rtc.tokenRefreshInterval as number
+  const minValidity = toValue((rtc.tokenMinValidity as number) / 1000) // convert to seconds
+  const idleTimeout = rtc.sessionIdleTimeout as number
+  const modalTimeout = rtc.sessionExpiredModalTimeout as number
+  let modalTimeoutId: ReturnType<typeof setTimeout> | null = null
+
   const route = useRoute()
   const { idle } = useIdle(idleTimeout)
 
+  function resetSessionTimeout () {
+    if (modalTimeoutId) {
+      clearTimeout(modalTimeoutId)
+      modalTimeoutId = null
+    }
+  }
+
+  // executed when user is authenticated and idle = true
+  // if route meta provided, override default behaviour
   function sessionExpiredFn () {
     if (route.meta.onSessionExpired) {
       route.meta.onSessionExpired()
     } else {
-      keycloak.logout()
+      useConnectModals().openSessionExpiringModal(resetSessionTimeout)
+
+      // cleanup modal timeout if exists
+      resetSessionTimeout()
+
+      // start countdown until user logged out
+      modalTimeoutId = setTimeout(async () => {
+        if (route.meta.onBeforeSessionExpired) {
+          await route.meta.onBeforeSessionExpired()
+        }
+        sessionStorage.setItem(ConnectStorageKeys.CONNECT_SESSION_EXPIRED, 'true')
+        keycloak.logout()
+      }, modalTimeout)
     }
   }
 
@@ -68,26 +99,17 @@ export default defineNuxtPlugin(async () => {
   watch(
     [() => keycloak.authenticated, () => idle.value],
     ([isAuth, isIdle]) => {
-      if (isAuth && !isIdle) {
-        scheduleRefreshToken()
-      } else if (isAuth && isIdle) {
-        sessionExpiredFn()
+      if (isAuth) {
+        sessionStorage.removeItem(ConnectStorageKeys.CONNECT_SESSION_EXPIRED)
+        if (!isIdle) {
+          scheduleRefreshToken()
+        } else {
+          sessionExpiredFn()
+        }
       }
     },
     { immediate: true }
   )
-
-  // default behaviour when keycloak session expires
-  keycloak.onTokenExpired = async () => {
-    if (idle.value) {
-      sessionExpiredFn()
-    } else {
-      await keycloak.updateToken(minValidity).catch(() => {
-        console.error('Failed to refresh token on expiration; logging out.')
-        keycloak.logout() // refresh token failed or not available
-      })
-    }
-  }
 
   return {
     provide: {

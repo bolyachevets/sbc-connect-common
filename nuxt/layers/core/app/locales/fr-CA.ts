@@ -75,5 +75,14 @@ export default {
         content: 'Une erreur inconnue s’est produite, veuillez actualiser la page ou réessayer plus tard.'
       }
     }
+  },
+  ConnectModalSessionExpiring: {
+    title: "Session Sur Le Point D'Expirer",
+    content: "Votre session est sur le point d'expirer en raison d'inactivité. Vous serez déconnecté dans {boldStart}0{boldEnd} secondes. Appuyez sur n'importe quelle touche pour continuer. | Votre session est sur le point d'expirer en raison d'inactivité. Vous serez déconnecté dans {boldStart}1{boldEnd} seconde. Appuyez sur n'importe quelle touche pour continuer. | Votre session est sur le point d'expirer en raison d'inactivité. Vous serez déconnecté dans {boldStart}{count}{boldEnd} secondes. Appuyez sur n'importe quelle touche pour continuer.",
+    sessionExpired: 'Session Expirée',
+    continueBtn: {
+      main: 'Continuer la Session',
+      aria: "Votre session est sur le point d'expirer, appuyez sur n'importe quelle touche pour continuer."
+    }
   }
 }
