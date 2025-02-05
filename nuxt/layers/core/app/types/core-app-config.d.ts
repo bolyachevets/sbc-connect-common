@@ -41,4 +41,29 @@ declare module '@nuxt/schema' {
   }
 }
 
+declare module 'nuxt/schema' {
+  interface AppConfig {
+    connect: {
+      core: {
+        login: LoginConfig,
+        header: {
+          options: HeaderOptions
+        },
+        plugin: {
+          authApi: {
+            errorRedirect: {
+              401: string
+            }
+          },
+          payApi: {
+            errorRedirect: {
+              401: string
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 export {}

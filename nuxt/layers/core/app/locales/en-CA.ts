@@ -76,6 +76,15 @@ export default {
       }
     }
   },
+  ConnectModalSessionExpiring: {
+    title: 'Session Expiring Soon',
+    content: 'Your session is about to expire due to inactivity. You will be logged out in {boldStart}0{boldEnd} seconds. Press any key to continue your session. | Your session is about to expire due to inactivity. You will be logged out in {boldStart}1{boldEnd} second. Press any key to continue your session. | Your session is about to expire due to inactivity. You will be logged out in {boldStart}{count}{boldEnd} seconds. Press any key to continue your session.',
+    sessionExpired: 'Session Expired',
+    continueBtn: {
+      main: 'Continue Session',
+      aria: 'Your session is about to expire, press any key to continue your session.'
+    }
+  },
   test: {
     i18nBold: {
       strong: 'This should have {boldStart} bold {boldEnd} text',

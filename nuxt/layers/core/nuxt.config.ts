@@ -66,6 +66,11 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: ['keycloak-js', 'js-sha256']
+    },
+    server: {
+      watch: {
+        usePolling: true
+      }
     }
   },
 
@@ -84,7 +89,11 @@ export default defineNuxtConfig({
       environment: process.env.NUXT_ENVIRONMENT_HEADER || '',
       baseUrl: process.env.NUXT_BASE_URL,
       paymentPortalUrl: process.env.NUXT_PAYMENT_PORTAL_URL,
-      payApiURL: `${process.env.NUXT_PAY_API_URL}${process.env.NUXT_PAY_API_VERSION}`
+      payApiURL: `${process.env.NUXT_PAY_API_URL}${process.env.NUXT_PAY_API_VERSION}`,
+      tokenRefreshInterval: process.env.NUXT_KEYCLOAK_REFRESH_INTERVAL || 30000, // default 30 seconds
+      tokenMinValidity: process.env.NUXT_KEYCLOAK_MIN_TOKEN_VALIDITY || 120000, // default 2 mins
+      sessionIdleTimeout: process.env.NUXT_CONNECT_SESSION_INACTIVITY_TIMEOUT || 1800000, // default 30 mins
+      sessionExpiredModalTimeout: process.env.NUXT_CONNECT_SESSION_MODAL_TIMEOUT || 120000 // default 2 mins
     }
   },
 
