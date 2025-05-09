@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { HeaderOptions } from '~/types/core-app-config'
-import { headerOptionsSymbol } from '~/utils/connect-injection-keys'
 
-const config = inject<HeaderOptions>(headerOptionsSymbol)
+const config = useAppConfig().connect.core.header.options as HeaderOptions
 </script>
 <template>
   <div

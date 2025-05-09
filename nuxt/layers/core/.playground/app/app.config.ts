@@ -8,14 +8,14 @@ export default defineAppConfig({
       },
       header: {
         options: {
-          localeSelect: true,
+          localeSelect: false,
           unauthenticated: {
             whatsNew: false,
             loginMenu: true,
-            createAccount: false
+            createAccount: true
           },
           authenticated: {
-            notifications: false,
+            notifications: true,
             accountOptionsMenu: true
           }
         }

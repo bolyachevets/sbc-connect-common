@@ -58,7 +58,7 @@ describe('useKeycloak', () => {
     expect($keycloak.login).toHaveBeenCalledOnce()
     expect($keycloak.login).toHaveBeenCalledWith({
       idpHint: 'bcsc',
-      redirectUri: location.origin + '/en-CA'
+      redirectUri: `${location.origin}/`
     })
 
     // call function with different redirect
@@ -82,7 +82,7 @@ describe('useKeycloak', () => {
     // assert
     expect($keycloak.logout).toHaveBeenCalledOnce()
     expect($keycloak.logout).toHaveBeenCalledWith({
-      redirectUri: `${location.origin}/en-CA`
+      redirectUri: `${location.origin}/`
     })
 
     // call function with different redirect

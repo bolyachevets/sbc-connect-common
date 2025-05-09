@@ -1,9 +1,10 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const accountStore = useConnectAccountStore()
+const route = useRoute()
 
 const breadcrumbs = computed<ConnectBreadcrumb[]>(() => {
-  const metaCrumbs = useRoute().meta.breadcrumbs
+  const metaCrumbs = route.meta?.breadcrumbs
 
   if (metaCrumbs) {
     return metaCrumbs.map((bc) => {
@@ -43,7 +44,6 @@ function resolveBackHref () {
         :disabled="breadcrumbs.length < 2"
         icon="i-mdi-arrow-left"
         :aria-label="$t('ConnectBreadcrumb.backBtn')"
-        data-cy="crumb-back"
         :to="resolveBackHref()"
       />
       <UBreadcrumb

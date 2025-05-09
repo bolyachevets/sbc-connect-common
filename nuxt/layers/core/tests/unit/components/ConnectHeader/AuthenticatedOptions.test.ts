@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { enI18n } from '~~/tests/unit/mocks/i18n'
 import { ConnectHeaderAuthenticatedOptions } from '#components'
 
 mockNuxtImport('useConnectAccountStore', () => {
@@ -50,11 +49,7 @@ mockNuxtImport('useConnectNav', () => {
 
 describe('<ConnectHeaderAuthenticatedOptions />', () => {
   it('renders', async () => {
-    const wrapper = await mountSuspended(ConnectHeaderAuthenticatedOptions, {
-      global: {
-        plugins: [enI18n]
-      }
-    })
+    const wrapper = await mountSuspended(ConnectHeaderAuthenticatedOptions)
 
     expect(wrapper).toBeDefined()
     expect(wrapper.html()).toContain('Account Options Menu')
@@ -62,22 +57,14 @@ describe('<ConnectHeaderAuthenticatedOptions />', () => {
   })
 
   it('displays the correct account label', async () => {
-    const wrapper = await mountSuspended(ConnectHeaderAuthenticatedOptions, {
-      global: {
-        plugins: [enI18n]
-      }
-    })
+    const wrapper = await mountSuspended(ConnectHeaderAuthenticatedOptions)
 
     expect(wrapper.text()).toContain('Test User')
     expect(wrapper.text()).toContain('Test Account')
   })
 
   it('opens the account options dropdown', async () => {
-    const wrapper = await mountSuspended(ConnectHeaderAuthenticatedOptions, {
-      global: {
-        plugins: [enI18n]
-      }
-    })
+    const wrapper = await mountSuspended(ConnectHeaderAuthenticatedOptions)
 
     const dropdownButton = wrapper.find('#account-options-button')
     await dropdownButton.trigger('click')
@@ -87,11 +74,7 @@ describe('<ConnectHeaderAuthenticatedOptions />', () => {
   })
 
   it('renders the correct slots', async () => {
-    const wrapper = await mountSuspended(ConnectHeaderAuthenticatedOptions, {
-      global: {
-        plugins: [enI18n]
-      }
-    })
+    const wrapper = await mountSuspended(ConnectHeaderAuthenticatedOptions)
 
     const accountSlot = wrapper.findComponent({ name: 'ConnectHeaderAuthenticatedOptionsAccountLabel' })
     expect(accountSlot).toBeDefined()

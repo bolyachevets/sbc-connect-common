@@ -13,7 +13,7 @@ const user = ref(undefined)
 </script>
 <template>
   <div class="flex flex-col gap-8 border border-black px-2 py-8">
-    <p>{{ user.name }}</p>
+    <!-- <p>{{ user.name }}</p> -->
     <h1>
       Testing 2 page
     </h1>

@@ -2,11 +2,18 @@
 
 # Nuxt 3 Core Layer - SBC Connect Common
 
+> [!IMPORTANT]
+> All new projects should use the layer at the [nuxt-v2 branch](https://github.com/bcgov/sbc-connect-common/tree/nuxt-v2).
+
+> This branch only supports: 
+   - Nuxt v3.15.4, Nuxt/i18n v8.5.6, due to breaking changes in Nuxt v3.16+
+   - Nuxt UI v2.22.0. For Nuxt UI v3+, please use the [nuxt-v2 branch](https://github.com/bcgov/sbc-connect-common/tree/nuxt-v2)
+
 This layer was created to enhance developer experience when creating BCROS/SBC applications.
 
 Included are items such as:
 
-- The BC Gov color theme
+- The BC Gov colour theme
 - BCSans fonts
 - BC favicon
 - BC Gov logos 
@@ -18,7 +25,6 @@ Included are items such as:
 Also included are several common npm packages and nuxt modules.
 
 - [Nuxt UI](https://ui.nuxt.com/)
-- [Nuxt Content](https://content.nuxt.com/)
 - [Nuxt I18n](https://i18n.nuxtjs.org/?utm_source=nuxt.com&utm_medium=aside-module&utm_campaign=nuxt.com)
 - [Pinia](https://pinia.vuejs.org/introduction.html)
 - [Pinia Persisted State](https://prazdevs.github.io/pinia-plugin-persistedstate/?utm_source=nuxt.com&utm_medium=aside-module&utm_campaign=nuxt.com)

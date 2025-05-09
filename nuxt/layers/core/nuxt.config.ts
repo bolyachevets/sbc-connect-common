@@ -5,6 +5,8 @@ import { dirname, join } from 'path'
 const currentDir = dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
+  ssr: false, 
+
   devtools: { enabled: false },
 
   compatibilityDate: '2024-07-16',
@@ -26,12 +28,10 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxt/ui',
-    '@nuxt/content',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/i18n',
     '@vueuse/nuxt',
-    '@nuxt/image'
     // '@nuxt/test-utils/module'
   ],
 
@@ -65,7 +65,7 @@ export default defineNuxtConfig({
 
   vite: {
     optimizeDeps: {
-      include: ['keycloak-js', 'js-sha256']
+      include: ['keycloak-js']
     },
     server: {
       watch: {
