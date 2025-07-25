@@ -46,7 +46,7 @@ def getconn(db_config: DBConfig) -> object:
             user=db_config.user,
             ip_type=db_config.ip_type,
             driver="pg8000",
-            enable_iam_auth=True
+            enable_iam_auth=True,
         )
 
         if db_config.schema:
@@ -60,13 +60,16 @@ def getconn(db_config: DBConfig) -> object:
 
 def setup_search_path_event_listener(engine, schema):
     """Set up an event listener to set the search path for a database connection.
-    
+
     Args:
         engine: The SQLAlchemy engine object
         schema: The database schema name to use
     """
+
     @event.listens_for(engine, "checkout")
-    def set_search_path_on_checkout(dbapi_connection, connection_record, connection_proxy):
+    def set_search_path_on_checkout(
+        dbapi_connection, connection_record, connection_proxy
+    ):
         cursor = dbapi_connection.cursor()
         cursor.execute(f"SET search_path TO {schema},public")
         cursor.close()

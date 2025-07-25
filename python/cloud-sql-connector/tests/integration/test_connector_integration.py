@@ -14,12 +14,12 @@
 """Integration tests for cloud SQL connector.
 
 These tests require actual Cloud SQL credentials and instances for testing.
-They are typically run in CI/CD environments with proper authentication.
 """
 
 import os
 
 import pytest
+
 from cloud_sql_connector import DBConfig, getconn
 
 
@@ -31,58 +31,60 @@ class TestCloudSQLIntegration:
     def db_config(self):
         """Create a test database configuration from environment variables."""
         return DBConfig(
-            instance_name=os.getenv("CLOUD_SQL_INSTANCE", "test:us-central1:test-instance"),
+            instance_name=os.getenv(
+                "CLOUD_SQL_INSTANCE", "test:us-central1:test-instance"
+            ),
             database=os.getenv("CLOUD_SQL_DATABASE", "test_db"),
             user=os.getenv("CLOUD_SQL_USER", "test_user"),
             ip_type=os.getenv("CLOUD_SQL_IP_TYPE", "public"),
-            schema=os.getenv("CLOUD_SQL_SCHEMA", "")
+            schema=os.getenv("CLOUD_SQL_SCHEMA", ""),
         )
 
     @pytest.mark.skipif(
         not os.getenv("CLOUD_SQL_INSTANCE"),
-        reason="Cloud SQL instance not configured for integration tests"
+        reason="Cloud SQL instance not configured for integration tests",
     )
     def test_real_connection(self, db_config):
         """Test actual connection to Cloud SQL instance.
-        
+
         This test requires proper Google Cloud credentials and a real Cloud SQL instance.
         """
         try:
             connection = getconn(db_config)
             assert connection is not None
-            
+
             # Test basic query
             cursor = connection.cursor()
             cursor.execute("SELECT 1 as test_column")
             result = cursor.fetchone()
             assert result[0] == 1
-            
+
             cursor.close()
             connection.close()
-            
+
         except Exception as e:
             pytest.fail(f"Failed to establish Cloud SQL connection: {str(e)}")
 
     @pytest.mark.skipif(
         not os.getenv("CLOUD_SQL_INSTANCE"),
-        reason="Cloud SQL instance not configured for integration tests"
+        reason="Cloud SQL instance not configured for integration tests",
     )
     def test_schema_configuration(self, db_config):
         """Test schema configuration with actual connection."""
         if not db_config.schema:
             pytest.skip("Schema not configured for integration test")
-            
+
         try:
             connection = getconn(db_config)
-            
+
             # Verify schema is set correctly
             cursor = connection.cursor()
             cursor.execute("SHOW search_path")
             search_path = cursor.fetchone()[0]
             assert db_config.schema in search_path
-            
+
             cursor.close()
             connection.close()
-            
+
         except Exception as e:
             pytest.fail(f"Failed schema configuration test: {str(e)}")

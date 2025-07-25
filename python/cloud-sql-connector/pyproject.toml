@@ -7,8 +7,8 @@ readme = "README.md"
 packages = [{include = "cloud_sql_connector", from = "src"}]
 
 [tool.poetry.dependencies]
-python = "^3.9"
-cloud-sql-python-connector = "^1.0.0"
+python = "^3.12"
+cloud-sql-python-connector = "^1.16.0"
 sqlalchemy = "^2.0.0"
 pg8000 = "^1.30.0"
 
@@ -18,6 +18,11 @@ pytest-mock = "^3.11.1"
 pytest-cov = "^4.0.0"
 black = "^24.4.2"
 zimports = "^0.6.1"
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+]
 
 [[tool.poetry.source]]
 name = "sbc-connect"
