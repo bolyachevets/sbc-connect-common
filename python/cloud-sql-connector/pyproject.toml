@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "cloud-sql-connector"
+version = "0.1.0"
+description = "Cloud SQL connection utilities for database connectivity with authentication and schema management"
+authors = ["Andriy Bolyachevets <andriy.Bolyachevets@gov.bc.ca>"]
+readme = "README.md"
+packages = [{include = "cloud_sql_connector", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+cloud-sql-python-connector = "^1.0.0"
+sqlalchemy = "^2.0.0"
+pg8000 = "^1.30.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+pytest-mock = "^3.11.1"
+pytest-cov = "^4.0.0"
+black = "^24.4.2"
+zimports = "^0.6.1"
+
+[[tool.poetry.source]]
+name = "sbc-connect"
+url = "https://northamerica-northeast1-python.pkg.dev/c4hnrd-tools/python/"
+priority = "explicit"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

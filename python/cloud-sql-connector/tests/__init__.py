@@ -11,8 +11,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""This module provides Cloud SQL connection utilities and database configuration helpers."""
-
-from .connector import DBConfig, getconn, setup_search_path_event_listener
-
-__all__ = ["DBConfig", "getconn", "setup_search_path_event_listener"]
+"""Test package initialization."""
