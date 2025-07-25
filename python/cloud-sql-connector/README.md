@@ -112,7 +112,6 @@ source .env && poetry run pytest tests/integration/ -v
 
 ```bash
 poetry run black .
-poetry run zimports .
 ```
 
 ## License
