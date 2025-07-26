@@ -42,7 +42,7 @@ class DBConfig:
     def __post_init__(self):
         """Initialize default connect_args if not provided."""
         if self.connect_args is None:
-            self.connect_args = {"use_native_uuid": False}
+            self.connect_args = {}
     
     def get_engine_options(self) -> dict:
         """Get SQLAlchemy engine options for this configuration.
