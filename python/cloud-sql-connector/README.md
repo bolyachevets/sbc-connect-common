@@ -67,8 +67,6 @@ poetry run pytest tests/unit/ -v
 
 #### Integration Tests
 
-Integration tests require actual Cloud SQL credentials and a running Cloud SQL instance. They are typically run in CI/CD environments with proper authentication.
-
 **Prerequisites for Integration Tests:**
 
 1. **Google Cloud Credentials**: Set up authentication using one of these methods:

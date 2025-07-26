@@ -28,6 +28,37 @@ class DBConfig:
     user: str
     ip_type: str
     schema: str
+    enable_iam_auth: bool = True
+    driver: str = "pg8000"
+    
+    # Connection pool parameters
+    pool_size: int = 5
+    max_overflow: int = 2
+    pool_timeout: int = 10
+    pool_recycle: int = 1800
+    pool_pre_ping: bool = True
+    connect_args: dict = None
+    
+    def __post_init__(self):
+        """Initialize default connect_args if not provided."""
+        if self.connect_args is None:
+            self.connect_args = {"use_native_uuid": False}
+    
+    def get_engine_options(self) -> dict:
+        """Get SQLAlchemy engine options for this configuration.
+        
+        Returns:
+            dict: Dictionary of engine options suitable for SQLAlchemy create_engine()
+        """
+        return {
+            "creator": lambda: getconn(self),
+            "pool_size": self.pool_size,
+            "max_overflow": self.max_overflow,
+            "pool_timeout": self.pool_timeout,
+            "pool_recycle": self.pool_recycle,
+            "pool_pre_ping": self.pool_pre_ping,
+            "connect_args": self.connect_args
+        }
 
 
 def getconn(db_config: DBConfig) -> object:
@@ -45,8 +76,8 @@ def getconn(db_config: DBConfig) -> object:
             db=db_config.database,
             user=db_config.user,
             ip_type=db_config.ip_type,
-            driver="pg8000",
-            enable_iam_auth=True,
+            driver=db_config.driver,
+            enable_iam_auth=db_config.enable_iam_auth,
         )
 
         if db_config.schema:
