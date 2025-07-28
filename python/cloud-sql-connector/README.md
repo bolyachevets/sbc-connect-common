@@ -83,16 +83,7 @@ poetry run pytest tests/unit/ -v
    gcloud auth application-default login
    ```
 
-2. **Environment Variables**: Configure the following environment variables:
-   ```bash
-   export CLOUD_SQL_INSTANCE="your-project:region:instance-name"
-   export CLOUD_SQL_DATABASE="your_database_name"
-   export CLOUD_SQL_USER="your_database_user"
-   export CLOUD_SQL_IP_TYPE="public"  # or "private"
-   export CLOUD_SQL_SCHEMA="your_schema"  # optional
-   ```
-
-3. **Cloud SQL Instance**: Ensure you have a running Cloud SQL PostgreSQL instance with:
+2. **Cloud SQL Instance**: Ensure you have a running Cloud SQL PostgreSQL instance with:
    - IAM authentication enabled
    - The service account has Cloud SQL Client role
    - Database and user configured
