@@ -30,23 +30,24 @@ class DBConfig:
     schema: str
     enable_iam_auth: bool = True
     driver: str = "pg8000"
-    
+
     # Connection pool parameters
     pool_size: int = 5
     max_overflow: int = 2
     pool_timeout: int = 10
-    pool_recycle: int = 1800
+    pool_recycle: int = 300
+    pool_use_lifo: bool = True
     pool_pre_ping: bool = True
     connect_args: dict = None
-    
+
     def __post_init__(self):
         """Initialize default connect_args if not provided."""
         if self.connect_args is None:
             self.connect_args = {}
-    
+
     def get_engine_options(self) -> dict:
         """Get SQLAlchemy engine options for this configuration.
-        
+
         Returns:
             dict: Dictionary of engine options suitable for SQLAlchemy create_engine()
         """
@@ -57,7 +58,8 @@ class DBConfig:
             "pool_timeout": self.pool_timeout,
             "pool_recycle": self.pool_recycle,
             "pool_pre_ping": self.pool_pre_ping,
-            "connect_args": self.connect_args
+            "pool_use_lifo": self.pool_use_lifo,
+            "connect_args": self.connect_args,
         }
 
 
