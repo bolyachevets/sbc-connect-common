@@ -45,7 +45,6 @@ def _history_mapper(local_mapper):
     else:
         super_history_mapper = None
 
-    # Get excluded columns from __versioned__ configuration
     excluded_columns = getattr(cls, '__versioned__', {}).get('exclude', [])
 
     if not super_mapper or local_mapper.local_table is not super_mapper.local_table:
@@ -58,7 +57,6 @@ def _history_mapper(local_mapper):
         )
 
         for orig_c, history_c in zip(local_mapper.local_table.c, history_table.c):
-            # Skip excluded columns
             if orig_c.key in excluded_columns:
                 continue
                 
