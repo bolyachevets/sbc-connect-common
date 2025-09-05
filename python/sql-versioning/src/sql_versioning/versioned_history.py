@@ -212,7 +212,6 @@ def create_version(obj, session, deleted=False):
 
     obj_changed = False
 
-    # Get excluded columns from __versioned__ configuration
     excluded_columns = getattr(obj_mapper.class_, '__versioned__', {}).get('exclude', [])
 
     for om, hm in zip(obj_mapper.iterate_to_root(), history_mapper.iterate_to_root()):
@@ -225,7 +224,6 @@ def create_version(obj, session, deleted=False):
 
             obj_col = om.local_table.c[hist_col.key]
 
-            # Skip excluded columns
             if obj_col.key in excluded_columns:
                 continue
 
