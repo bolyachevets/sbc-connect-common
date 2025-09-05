@@ -45,6 +45,9 @@ def _history_mapper(local_mapper):
     else:
         super_history_mapper = None
 
+    # Get excluded columns from __versioned__ configuration
+    excluded_columns = getattr(cls, '__versioned__', {}).get('exclude', [])
+
     if not super_mapper or local_mapper.local_table is not super_mapper.local_table:
         version_meta = {"version_meta": True}  # add column.info to identify
         # columns specific to versioning
@@ -55,6 +58,10 @@ def _history_mapper(local_mapper):
         )
 
         for orig_c, history_c in zip(local_mapper.local_table.c, history_table.c):
+            # Skip excluded columns
+            if orig_c.key in excluded_columns:
+                continue
+                
             orig_c.info["history_copy"] = history_c
             history_c.unique = False
             history_c.default = history_c.server_default = None
@@ -179,6 +186,10 @@ class Versioned:
     __table_args__ = {"sqlite_autoincrement": True}
     """Use sqlite_autoincrement, to ensure unique integer values
     are used for new rows even for rows that have been deleted."""
+    
+    __versioned__ = {}
+    """Dictionary to configure versioning behavior. 
+    Use 'exclude' key with a list of column names to exclude from versioning."""
 
     def __init_subclass__(cls) -> None:
         @event.listens_for(cls, "after_mapper_constructed")
@@ -203,6 +214,9 @@ def create_version(obj, session, deleted=False):
 
     obj_changed = False
 
+    # Get excluded columns from __versioned__ configuration
+    excluded_columns = getattr(obj_mapper.class_, '__versioned__', {}).get('exclude', [])
+
     for om, hm in zip(obj_mapper.iterate_to_root(), history_mapper.iterate_to_root()):
         if hm.single:
             continue
@@ -212,6 +226,10 @@ def create_version(obj, session, deleted=False):
                 continue
 
             obj_col = om.local_table.c[hist_col.key]
+
+            # Skip excluded columns
+            if obj_col.key in excluded_columns:
+                continue
 
             # get the value of the
             # attribute based on the MapperProperty related to the
