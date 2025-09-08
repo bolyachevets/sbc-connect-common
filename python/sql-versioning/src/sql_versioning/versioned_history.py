@@ -219,9 +219,6 @@ def create_version(obj, session, deleted=False):
 
             obj_col = om.local_table.c[hist_col.key]
 
-            if obj_col.key in excluded_columns:
-                continue
-
             # get the value of the
             # attribute based on the MapperProperty related to the
             # mapped column.  this will allow usage of MapperProperties
@@ -245,13 +242,15 @@ def create_version(obj, session, deleted=False):
 
             if d:
                 attr[prop.key] = d[0]
-                obj_changed = True
+                if obj_col.key not in excluded_columns:
+                    obj_changed = True
             elif u:
                 attr[prop.key] = u[0]
             elif a:
                 # if the attribute had no value.
                 attr[prop.key] = a[0]
-                obj_changed = True
+                if obj_col.key not in excluded_columns:
+                    obj_changed = True
 
     if not obj_changed:
         # not changed, but we have relationships.  OK
