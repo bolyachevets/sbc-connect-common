@@ -45,8 +45,6 @@ def _history_mapper(local_mapper):
     else:
         super_history_mapper = None
 
-    excluded_columns = getattr(cls, '__versioned__', {}).get('exclude', [])
-
     if not super_mapper or local_mapper.local_table is not super_mapper.local_table:
         version_meta = {"version_meta": True}  # add column.info to identify
         # columns specific to versioning
@@ -57,9 +55,6 @@ def _history_mapper(local_mapper):
         )
 
         for orig_c, history_c in zip(local_mapper.local_table.c, history_table.c):
-            if orig_c.key in excluded_columns:
-                continue
-                
             orig_c.info["history_copy"] = history_c
             history_c.unique = False
             history_c.default = history_c.server_default = None
