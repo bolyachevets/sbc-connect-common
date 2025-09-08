@@ -182,7 +182,7 @@ class Versioned:
     
     __versioned__ = {}
     """Dictionary to configure versioning behavior. 
-    Use 'exclude' key with a list of column names to exclude from versioning."""
+    Use 'exclude' key with a list of column names to exclude from triggering a history row."""
 
     def __init_subclass__(cls) -> None:
         @event.listens_for(cls, "after_mapper_constructed")
