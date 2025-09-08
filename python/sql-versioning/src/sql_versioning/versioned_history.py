@@ -179,6 +179,10 @@ class Versioned:
     __table_args__ = {"sqlite_autoincrement": True}
     """Use sqlite_autoincrement, to ensure unique integer values
     are used for new rows even for rows that have been deleted."""
+    
+    __versioned__ = {}
+    """Dictionary to configure versioning behavior. 
+    Use 'exclude' key with a list of column names to exclude from triggering a history row."""
 
     def __init_subclass__(cls) -> None:
         @event.listens_for(cls, "after_mapper_constructed")
@@ -202,6 +206,8 @@ def create_version(obj, session, deleted=False):
     attr = {}
 
     obj_changed = False
+
+    excluded_columns = getattr(obj_mapper.class_, '__versioned__', {}).get('exclude', [])
 
     for om, hm in zip(obj_mapper.iterate_to_root(), history_mapper.iterate_to_root()):
         if hm.single:
@@ -236,13 +242,15 @@ def create_version(obj, session, deleted=False):
 
             if d:
                 attr[prop.key] = d[0]
-                obj_changed = True
+                if obj_col.key not in excluded_columns:
+                    obj_changed = True
             elif u:
                 attr[prop.key] = u[0]
             elif a:
                 # if the attribute had no value.
                 attr[prop.key] = a[0]
-                obj_changed = True
+                if obj_col.key not in excluded_columns:
+                    obj_changed = True
 
     if not obj_changed:
         # not changed, but we have relationships.  OK
