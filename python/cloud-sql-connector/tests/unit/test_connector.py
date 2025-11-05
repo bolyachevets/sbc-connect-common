@@ -18,11 +18,8 @@ from unittest.mock import MagicMock, Mock, call, patch
 
 import pytest
 
-from cloud_sql_connector.connector import (
-    DBConfig,
-    getconn,
-    setup_search_path_event_listener,
-)
+from cloud_sql_connector.connector import (DBConfig, getconn,
+                                           setup_search_path_event_listener)
 
 
 class TestDBConfig:
@@ -56,18 +53,13 @@ class TestDBConfig:
 
         assert config.schema == ""
 
-
 class TestGetconn:
     """Test the getconn function."""
 
-    @patch("cloud_sql_connector.connector.Connector")
-    def test_getconn_without_schema(self, mock_connector_class):
+    @patch("cloud_sql_connector.connector._connector")
+    def test_getconn_without_schema(self, mock_connector):
         """Test getconn function without schema."""
         # Setup mocks
-        mock_connector = MagicMock()
-        mock_connector_class.return_value.__enter__ = Mock(return_value=mock_connector)
-        mock_connector_class.return_value.__exit__ = Mock(return_value=None)
-
         mock_connection = Mock()
         mock_connector.connect.return_value = mock_connection
 
@@ -84,7 +76,6 @@ class TestGetconn:
         result = getconn(config)
 
         # Assertions
-        mock_connector_class.assert_called_once_with(refresh_strategy="lazy")
         mock_connector.connect.assert_called_once_with(
             instance_connection_string="project:region:instance",
             db="test_db",
@@ -95,14 +86,10 @@ class TestGetconn:
         )
         assert result == mock_connection
 
-    @patch("cloud_sql_connector.connector.Connector")
-    def test_getconn_with_schema(self, mock_connector_class):
+    @patch("cloud_sql_connector.connector._connector")
+    def test_getconn_with_schema(self, mock_connector):
         """Test getconn function with schema."""
         # Setup mocks
-        mock_connector = MagicMock()
-        mock_connector_class.return_value.__enter__ = Mock(return_value=mock_connector)
-        mock_connector_class.return_value.__exit__ = Mock(return_value=None)
-
         mock_connection = Mock()
         mock_cursor = Mock()
         mock_connection.cursor.return_value = mock_cursor
@@ -121,7 +108,6 @@ class TestGetconn:
         result = getconn(config)
 
         # Assertions
-        mock_connector_class.assert_called_once_with(refresh_strategy="lazy")
         mock_connector.connect.assert_called_once_with(
             instance_connection_string="project:region:instance",
             db="test_db",

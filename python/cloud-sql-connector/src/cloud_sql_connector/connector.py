@@ -1,4 +1,4 @@
-# Copyright © 2019 Province of British Columbia
+# Copyright © 2025 Province of British Columbia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,11 +13,13 @@
 # limitations under the License.
 """Cloud SQL connection utilities for the Notify API service."""
 
+import time
 from dataclasses import dataclass
 
 from google.cloud.sql.connector import Connector
 from sqlalchemy import event
 
+_connector = Connector(refresh_strategy="lazy")
 
 @dataclass
 class DBConfig:
@@ -72,23 +74,30 @@ def getconn(db_config: DBConfig) -> object:
     Returns:
         object: A connection object to the database.
     """
-    with Connector(refresh_strategy="lazy") as connector:
-        conn = connector.connect(
-            instance_connection_string=db_config.instance_name,
-            db=db_config.database,
-            user=db_config.user,
-            ip_type=db_config.ip_type,
-            driver=db_config.driver,
-            enable_iam_auth=db_config.enable_iam_auth,
-        )
+    for attempt in range(3):
+        try:
+            conn = _connector.connect(
+                instance_connection_string=db_config.instance_name,
+                db=db_config.database,
+                user=db_config.user,
+                ip_type=db_config.ip_type,
+                driver=db_config.driver,
+                enable_iam_auth=db_config.enable_iam_auth,
+            )
 
-        if db_config.schema:
-            cursor = conn.cursor()
-            cursor.execute(f"SET search_path TO {db_config.schema},public")
-            cursor.execute(f"SET LOCAL search_path TO {db_config.schema}, public;")
-            cursor.close()
+            if db_config.schema:
+                cursor = conn.cursor()
+                cursor.execute(f"SET search_path TO {db_config.schema},public")
+                cursor.execute(f"SET LOCAL search_path TO {db_config.schema}, public;")
+                cursor.close()
 
-        return conn
+            return conn
+
+        except PermissionError as e:
+            if attempt < 2:
+                time.sleep(1)
+                continue
+            raise
 
 
 def setup_search_path_event_listener(engine, schema):

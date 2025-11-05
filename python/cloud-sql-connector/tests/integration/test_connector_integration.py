@@ -88,3 +88,21 @@ class TestCloudSQLIntegration:
 
         except Exception as e:
             pytest.fail(f"Failed schema configuration test: {str(e)}")
+
+
+    @pytest.mark.skipif(
+        not os.getenv("CLOUD_SQL_INSTANCE"),
+        reason="Cloud SQL instance not configured for integration tests",
+    )
+    def test_connection_pooling(self, db_config):
+        """Test that connection pooling works correctly with the upgraded dependencies."""
+        from sqlalchemy import create_engine, text
+
+        engine = create_engine("postgresql+pg8000://", **db_config.get_engine_options())
+
+        # Test multiple simultaneous connections
+        with engine.connect() as conn1, engine.connect() as conn2:
+            result1 = conn1.execute(text("SELECT 1"))
+            result2 = conn2.execute(text("SELECT 2"))
+            assert result1.scalar() == 1
+            assert result2.scalar() == 2
