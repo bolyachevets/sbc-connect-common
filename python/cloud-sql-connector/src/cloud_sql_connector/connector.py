@@ -13,13 +13,15 @@
 # limitations under the License.
 """Cloud SQL connection utilities for the Notify API service."""
 
+import threading
 import time
 from dataclasses import dataclass
 
 from google.cloud.sql.connector import Connector
 from sqlalchemy import event
 
-_connector = Connector(refresh_strategy="lazy")
+_connector = None
+_lock = threading.Lock()
 
 @dataclass
 class DBConfig:
@@ -65,6 +67,22 @@ class DBConfig:
         }
 
 
+def _get_connector() -> Connector:
+    """Get the singleton connector instance with lazy initialization.
+    
+    Returns:
+        Connector: The singleton connector instance
+    """
+    global _connector
+    
+    if _connector is None:
+        with _lock:
+            if _connector is None:
+                _connector = Connector(refresh_strategy="lazy")
+    
+    return _connector
+
+
 def getconn(db_config: DBConfig) -> object:
     """Create a database connection.
 
@@ -76,7 +94,8 @@ def getconn(db_config: DBConfig) -> object:
     """
     for attempt in range(3):
         try:
-            conn = _connector.connect(
+            connector = _get_connector()
+            conn = connector.connect(
                 instance_connection_string=db_config.instance_name,
                 db=db_config.database,
                 user=db_config.user,

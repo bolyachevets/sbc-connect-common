@@ -93,7 +93,7 @@ poetry run pytest tests/unit/ -v
 Create .env file using .env.sample template.
 
 ```bash
-source .env && poetry run pytest tests/integration/ -v
+set -a; source .env; set +a && poetry run pytest tests/integration/ -v
 ```
 
 **Troubleshooting:**
