@@ -73,22 +73,12 @@ export const useConnectAccountStore = defineStore('nuxt-core-connect-account-sto
     const authApiURL = useRuntimeConfig().public.authApiURL
     try {
       await updateAuthUserInfo() // update user roles before fetching user info
-      const response = await fetch(`${authApiURL}/users/${identifier}`, { // native fetch doesnt break app
+      const response = await $authApi(`/users/${identifier}`, {
         headers: {
           Authorization: `Bearer ${$keycloak.token}`
         }
       })
-      const data = await response.json()
-      if (response.ok) {
-        return data
-      } else {
-        errors.value.push({
-          statusCode: response.status || 500,
-          message: data.message || data.description || 'Error fetching user info.',
-          detail: data.detail || '',
-          category: ErrorCategory.USER_INFO
-        })
-      }
+      return response
     } catch (e) {
       logFetchError(e, 'Error fetching user info.')
     }
