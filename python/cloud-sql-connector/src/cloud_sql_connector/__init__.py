@@ -13,6 +13,7 @@
 # limitations under the License.
 """This module provides Cloud SQL connection utilities and database configuration helpers."""
 
-from .connector import DBConfig, getconn, setup_search_path_event_listener
+from .connector import (DBConfig, close_connector, getconn,
+						setup_search_path_event_listener)
 
-__all__ = ["DBConfig", "getconn", "setup_search_path_event_listener"]
+__all__ = ["DBConfig", "close_connector", "getconn", "setup_search_path_event_listener"]

@@ -83,6 +83,16 @@ def _get_connector() -> Connector:
     return _connector
 
 
+def close_connector() -> None:
+    """Close and clear the singleton connector instance."""
+    global _connector
+
+    with _lock:
+        if _connector is not None:
+            _connector.close()
+            _connector = None
+
+
 def getconn(db_config: DBConfig) -> object:
     """Create a database connection.
 
