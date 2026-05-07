@@ -18,7 +18,7 @@ from unittest.mock import MagicMock, Mock, call, patch
 
 import pytest
 
-from cloud_sql_connector.connector import (DBConfig, getconn,
+from cloud_sql_connector.connector import (DBConfig, close_connector, getconn,
                                            setup_search_path_event_listener)
 
 
@@ -127,6 +127,26 @@ class TestGetconn:
         mock_cursor.close.assert_called_once()
 
         assert result == mock_connection
+
+
+class TestCloseConnector:
+    """Test the close_connector function."""
+
+    @patch("cloud_sql_connector.connector._connector")
+    def test_close_connector_closes_singleton(self, mock_connector):
+        """Test close_connector closes and clears the singleton connector."""
+        close_connector()
+
+        mock_connector.close.assert_called_once_with()
+
+        from cloud_sql_connector import connector
+
+        assert connector._connector is None
+
+    @patch("cloud_sql_connector.connector._connector", None)
+    def test_close_connector_without_singleton(self):
+        """Test close_connector is a no-op when the singleton is unset."""
+        close_connector()
 
 
 class TestSetupSearchPathEventListener:
