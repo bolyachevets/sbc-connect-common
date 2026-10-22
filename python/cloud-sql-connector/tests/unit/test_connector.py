@@ -16,10 +16,13 @@
 import sys
 from unittest.mock import MagicMock, Mock, call, patch
 
-import pytest
-
-from cloud_sql_connector.connector import (DBConfig, close_connector, getconn,
-                                           setup_search_path_event_listener)
+from cloud_sql_connector.connector import (
+    DBConfig,
+    close_connector,
+    getconn,
+    setup_pg8000_close_event_listener,
+    setup_search_path_event_listener,
+)
 
 
 class TestDBConfig:
@@ -52,6 +55,7 @@ class TestDBConfig:
         )
 
         assert config.schema == ""
+
 
 class TestGetconn:
     """Test the getconn function."""
@@ -205,3 +209,184 @@ class TestSetupSearchPathEventListener:
             "SET search_path TO test_schema,public"
         )
         mock_cursor.close.assert_called_once()
+
+
+class TestSetupPg8000CloseEventListener:
+    """Test the setup_pg8000_close_event_listener function."""
+
+    @patch("cloud_sql_connector.connector.event")
+    def test_setup_pg8000_close_event_listener_non_pg8000(self, mock_event):
+        """Test setting up the event listener skips when driver is not pg8000."""
+        mock_engine = Mock()
+        mock_engine.driver = "psycopg2"
+
+        # Call function
+        setup_pg8000_close_event_listener(mock_engine)
+
+        # Verify event listener is NOT set up
+        mock_event.listens_for.assert_not_called()
+
+    @patch("cloud_sql_connector.connector.event")
+    def test_setup_pg8000_close_event_listener(self, mock_event):
+        """Test setting up the pg8000 close event listener."""
+        mock_engine = Mock()
+        mock_engine.driver = "pg8000"
+
+        # Call function
+        setup_pg8000_close_event_listener(mock_engine)
+
+        # Verify event listener is set up
+        mock_event.listens_for.assert_called_once_with(mock_engine, "connect")
+
+    @patch("cloud_sql_connector.connector.event")
+    def test_event_listener_callback_normal_close(self, mock_event):
+        """Test the event listener callback function with normal close."""
+        mock_engine = Mock()
+        mock_engine.driver = "pg8000"
+
+        # Capture the callback function
+        callback_function = None
+
+        def capture_callback(engine, event_name):
+            def decorator(func):
+                nonlocal callback_function
+                callback_function = func
+                return func
+
+            return decorator
+
+        mock_event.listens_for.side_effect = capture_callback
+
+        # Setup the event listener
+        setup_pg8000_close_event_listener(mock_engine)
+
+        # Test the callback
+        mock_dbapi_conn = Mock()
+        original_close = mock_dbapi_conn.close
+        mock_connection_record = Mock()
+
+        # Call the callback to setup the wrapper
+        callback_function(mock_dbapi_conn, mock_connection_record)
+
+        # Now mock_dbapi_conn.close should be the wrapped safe_close
+        mock_dbapi_conn.close()
+
+        # original_close should have been called
+        original_close.assert_called_once()
+
+    @patch("cloud_sql_connector.connector.event")
+    def test_event_listener_callback_interface_error(self, mock_event):
+        """Test the event listener callback function suppressing InterfaceError."""
+        mock_engine = Mock()
+        mock_engine.driver = "pg8000"
+
+        # Capture the callback function
+        callback_function = None
+
+        def capture_callback(engine, event_name):
+            def decorator(func):
+                nonlocal callback_function
+                callback_function = func
+                return func
+
+            return decorator
+
+        mock_event.listens_for.side_effect = capture_callback
+
+        # Setup the event listener
+        setup_pg8000_close_event_listener(mock_engine)
+
+        # Mock the dbapi_conn and its close method to raise InterfaceError
+        try:
+            from pg8000.exceptions import InterfaceError
+        except ImportError:
+            InterfaceError = Exception
+
+        mock_dbapi_conn = Mock()
+        original_close = Mock(side_effect=InterfaceError("Test InterfaceError"))
+        mock_dbapi_conn.close = original_close
+        mock_connection_record = Mock()
+
+        # Call the callback to setup the wrapper
+        callback_function(mock_dbapi_conn, mock_connection_record)
+
+        # Now mock_dbapi_conn.close should be the wrapped safe_close
+        # This shouldn't raise any exception
+        mock_dbapi_conn.close()
+
+        # original_close should have been called
+        original_close.assert_called_once()
+
+    @patch("cloud_sql_connector.connector.event")
+    def test_event_listener_callback_value_error(self, mock_event):
+        """Test the event listener callback suppresses ValueError (e.g. "write to closed
+        file", observed in production when the underlying socket is already closed)."""
+        mock_engine = Mock()
+        mock_engine.driver = "pg8000"
+        callback_function = None
+
+        def capture_callback(engine, event_name):
+            def decorator(func):
+                nonlocal callback_function
+                callback_function = func
+                return func
+
+            return decorator
+
+        mock_event.listens_for.side_effect = capture_callback
+
+        # Setup the event listener
+        setup_pg8000_close_event_listener(mock_engine)
+
+        # Mock the dbapi_conn and its close method to raise ValueError
+        mock_dbapi_conn = Mock()
+        original_close = Mock(side_effect=ValueError("write to closed file"))
+        mock_dbapi_conn.close = original_close
+        mock_connection_record = Mock()
+
+        # Call the callback to setup the wrapper
+        callback_function(mock_dbapi_conn, mock_connection_record)
+
+        # Now mock_dbapi_conn.close should be the wrapped safe_close
+        # This shouldn't raise any exception
+        mock_dbapi_conn.close()
+
+        # original_close should have been called
+        original_close.assert_called_once()
+
+    @patch("cloud_sql_connector.connector.event")
+    def test_event_listener_callback_os_error(self, mock_event):
+        """Test the event listener callback suppresses OSError (e.g. a broken pipe when the
+        Cloud SQL Auth Proxy sidecar is torn down before the app during Cloud Run scale-down)."""
+        mock_engine = Mock()
+        mock_engine.driver = "pg8000"
+        callback_function = None
+
+        def capture_callback(engine, event_name):
+            def decorator(func):
+                nonlocal callback_function
+                callback_function = func
+                return func
+
+            return decorator
+
+        mock_event.listens_for.side_effect = capture_callback
+
+        # Setup the event listener
+        setup_pg8000_close_event_listener(mock_engine)
+
+        # Mock the dbapi_conn and its close method to raise OSError
+        mock_dbapi_conn = Mock()
+        original_close = Mock(side_effect=OSError("Broken pipe"))
+        mock_dbapi_conn.close = original_close
+        mock_connection_record = Mock()
+
+        # Call the callback to setup the wrapper
+        callback_function(mock_dbapi_conn, mock_connection_record)
+
+        # Now mock_dbapi_conn.close should be the wrapped safe_close
+        # This shouldn't raise any exception
+        mock_dbapi_conn.close()
+
+        # original_close should have been called
+        original_close.assert_called_once()

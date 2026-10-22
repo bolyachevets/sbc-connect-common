@@ -23,6 +23,7 @@ from sqlalchemy import event
 _connector = None
 _lock = threading.Lock()
 
+
 @dataclass
 class DBConfig:
     """Database configuration settings."""
@@ -69,17 +70,17 @@ class DBConfig:
 
 def _get_connector() -> Connector:
     """Get the singleton connector instance with lazy initialization.
-    
+
     Returns:
         Connector: The singleton connector instance
     """
     global _connector
-    
+
     if _connector is None:
         with _lock:
             if _connector is None:
                 _connector = Connector(refresh_strategy="lazy")
-    
+
     return _connector
 
 
@@ -144,3 +145,39 @@ def setup_search_path_event_listener(engine, schema):
         cursor = dbapi_connection.cursor()
         cursor.execute(f"SET search_path TO {schema},public")
         cursor.close()
+
+
+def setup_pg8000_close_event_listener(engine):
+    """Set up an event listener to wrap dbapi connection close() to suppress pg8000 errors during Cloud Run scale-down.
+
+    Closing a connection whose underlying socket is already dead (e.g. the Cloud SQL Auth
+    Proxy sidecar was torn down first during Cloud Run scale-down, or the connection was
+    otherwise dropped) can raise different exception types depending on exactly how and when
+    the socket died - pg8000 has been observed to raise ``InterfaceError``, ``OSError``, and
+    ``ValueError`` ("write to closed file") for what is functionally the same situation. Since
+    the connection is being discarded either way, any exception raised while closing it is safe
+    to log and swallow here.
+
+    Args:
+        engine: The SQLAlchemy engine object
+    """
+    if getattr(engine, "driver", None) != "pg8000":
+        return
+
+    import logging
+
+    @event.listens_for(engine, "connect")
+    def on_connect(dbapi_conn, _connection_record):
+        original_close = dbapi_conn.close
+
+        def safe_close():
+            try:
+                original_close()
+            except Exception as e:
+                logging.getLogger(__name__).debug(
+                    "Suppressed %s while closing pg8000 connection during teardown: %s",
+                    type(e).__name__,
+                    e,
+                )
+
+        dbapi_conn.close = safe_close
